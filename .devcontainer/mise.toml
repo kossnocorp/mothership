@@ -1,0 +1,16 @@
+[tools]
+# Shell
+starship = "latest"
+# Stack
+node = { version = "latest", postinstall = "corepack enable" }
+rust = "latest"
+# Tools
+cargo-binstall = "latest"
+"cargo:just" = "latest"
+"cargo:https://github.com/tekumara/typos-lsp" = "latest"
+neovim = "latest"
+
+[settings]
+experimental = true
+cargo.binstall = true
+idiomatic_version_file_enable_tools = ["node", "rust"]
