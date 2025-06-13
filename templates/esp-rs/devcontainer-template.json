@@ -1,0 +1,9 @@
+{
+  "id": "esp-rs",
+  "version": "0.1.0",
+  "name": "esp-rs",
+  "description": "Rust on Espressif microcontrollers dev environment",
+  "publisher": "Sasha Koss <koss@nocorp.me>",
+  "platforms": ["Rust"],
+  "optionalPaths": [".github/*"]
+}

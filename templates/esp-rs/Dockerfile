@@ -28,6 +28,6 @@ RUN sudo apt-get update \
 
 # mise-controlled deps
 RUN mkdir -p "$HOME/.config/mise"
-COPY .devcontainer/mise.toml "$HOME/.config/mise/mise.toml"
+COPY mise.toml "$HOME/.config/mise/mise.toml"
 RUN eval "$(mise activate bash --shims)" \
         && mise install

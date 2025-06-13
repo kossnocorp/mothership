@@ -1,17 +1,13 @@
 {
-  "name": "Dev env",
+  "name": "esp-rs",
 
   "build": { "dockerfile": "Dockerfile", "context": ".." },
 
   // Put repo to /wrkspc
-  "workspaceMount": "source=${localWorkspaceFolder}/..,target=/wrkspc/,type=bind",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/wrkspc/${localWorkspaceFolderBasename},type=bind",
   "workspaceFolder": "/wrkspc/${localWorkspaceFolderBasename}",
 
   "mounts": [],
-
-  "features": {
-    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
-  },
 
   "onCreateCommand": ".devcontainer/scripts/on-create.sh",
   "postCreateCommand": ".devcontainer/scripts/post-create.sh",
@@ -26,17 +22,14 @@
         "esbenp.prettier-vscode",
         "hverlin.mise-vscode",
         "tekumara.typos-vscode",
-        "davidlday.languagetool-linter",
-        "tintinweb.vscode-inline-bookmarks",
-        "zoma.vscode-auto-open-workspace"
+        "davidlday.languagetool-linter"
       ],
       "settings": {
         "terminal.integrated.defaultProfile.linux": "fish",
         "terminal.integrated.profiles.linux": {
           "fish": { "path": "/usr/bin/fish" }
         },
-        "mise.binPath": "/home/vscode/.local/bin/mise",
-        "autoOpenWorkspace.enableAutoOpenIfSingleWorkspace": true
+        "mise.binPath": "/home/vscode/.local/bin/mise"
       }
     }
   }
