@@ -1,0 +1,1 @@
+FROM kossnocorp/esp-rs:latest

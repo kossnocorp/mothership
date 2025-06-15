@@ -7,6 +7,10 @@ rust = "latest"
 cargo-binstall = "latest"
 "cargo:just" = "latest"
 "cargo:https://github.com/tekumara/typos-lsp" = "latest"
+# Espressif
+"cargo:cargo-espflash" = "latest"
+"cargo:espflash" = "latest"
+"cargo:ldproxy" = "latest"
 
 [settings]
 experimental = true

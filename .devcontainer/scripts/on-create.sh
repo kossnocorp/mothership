@@ -2,4 +2,6 @@
 
 set -e
 
-# Nothing here yet, but that's the place for running stuff like `mise trust`
+eval "$(mise activate bash --shims)"
+
+just --completions fish > ~/.config/fish/completions/just.fish

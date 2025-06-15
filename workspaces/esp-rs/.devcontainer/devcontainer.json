@@ -1,5 +1,5 @@
 {
-  "name": "esp-rs",
+  "name": "wrkspc/esp-rs",
 
   "build": { "dockerfile": "Dockerfile", "context": ".." },
 
@@ -8,8 +8,8 @@
   "runArgs": ["--privileged"],
 
   // Put repo to /wrkspc
-  "workspaceMount": "source=${localWorkspaceFolder},target=/wrkspc/${localWorkspaceFolderBasename},type=bind",
-  "workspaceFolder": "/wrkspc/${localWorkspaceFolderBasename}",
+  "workspaceMount": "source=${localWorkspaceFolder}/../../..,target=/wrkspc/,type=bind",
+  "workspaceFolder": "/wrkspc/mothership/workspaces/${localWorkspaceFolderBasename}",
 
   "onCreateCommand": ".devcontainer/scripts/on-create.sh",
   "postCreateCommand": ".devcontainer/scripts/post-create.sh",
