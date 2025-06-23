@@ -1,13 +1,6 @@
 {
   "recommendations": [
-    "tamasfe.even-better-toml",
-    "nefrob.vscode-just-syntax",
-    "docker.docker",
-    "esbenp.prettier-vscode",
-    "hverlin.mise-vscode",
-    "tekumara.typos-vscode",
-    "davidlday.languagetool-linter",
-    "tintinweb.vscode-inline-bookmarks",
-    "zoma.vscode-auto-open-workspace"
+    "ms-vscode-remote.remote-containers",
+    "ms-azuretools.vscode-docker"
   ]
 }

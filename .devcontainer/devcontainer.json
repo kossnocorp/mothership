@@ -1,13 +1,11 @@
 {
-  "name": "Dev env",
+  "name": "Mothership",
 
   "build": { "dockerfile": "Dockerfile", "context": ".." },
 
   // Put repo to /wrkspc
   "workspaceMount": "source=${localWorkspaceFolder}/..,target=/wrkspc/,type=bind",
   "workspaceFolder": "/wrkspc/${localWorkspaceFolderBasename}",
-
-  "mounts": [],
 
   "features": {
     "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {}
@@ -27,16 +25,14 @@
         "hverlin.mise-vscode",
         "tekumara.typos-vscode",
         "davidlday.languagetool-linter",
-        "tintinweb.vscode-inline-bookmarks",
-        "zoma.vscode-auto-open-workspace"
+        "tintinweb.vscode-inline-bookmarks"
       ],
       "settings": {
         "terminal.integrated.defaultProfile.linux": "fish",
         "terminal.integrated.profiles.linux": {
           "fish": { "path": "/usr/bin/fish" }
         },
-        "mise.binPath": "/home/vscode/.local/bin/mise",
-        "autoOpenWorkspace.enableAutoOpenIfSingleWorkspace": true
+        "mise.binPath": "/home/vscode/.local/bin/mise"
       }
     }
   }
