@@ -1,1 +1,1 @@
-FROM kossnocorp/esp-rs:latest
+FROM kossnocorp/dev-esp-rs:latest

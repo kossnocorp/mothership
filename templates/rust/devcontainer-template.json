@@ -1,0 +1,9 @@
+{
+  "id": "rust",
+  "version": "0.1.0",
+  "name": "rust",
+  "description": "Rust development environment",
+  "publisher": "Sasha Koss <koss@nocorp.me>",
+  "platforms": ["Rust"],
+  "optionalPaths": []
+}
