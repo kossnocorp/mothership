@@ -1,7 +1,13 @@
-# base
+# Composite
+
+build: build-base build-node build-rust build-esp-rs
+
+publish: publish-base publish-node publish-rust publish-esp-rs
+
+# Base
 
 build-base:
-  docker build -t kossnocorp/dev-base templates/base
+  docker buildx build --platform linux/amd64,linux/arm64 -t kossnocorp/dev-base templates/base
 
 publish-base:
   docker push kossnocorp/dev-base
@@ -13,7 +19,7 @@ up-node:
   devcontainer up --workspace-folder workspaces/node
 
 build-node:
-  docker build -t kossnocorp/dev-node templates/node
+  docker buildx build --platform linux/amd64,linux/arm64 -t kossnocorp/dev-node templates/node
 
 publish-node:
   docker push kossnocorp/dev-node
@@ -21,7 +27,7 @@ publish-node:
 # Rust
 
 build-rust:
-  docker build -t kossnocorp/dev-rust templates/rust
+  docker buildx build --platform linux/amd64,linux/arm64 -t kossnocorp/dev-rust templates/rust
 
 publish-rust:
   docker push kossnocorp/dev-rust
@@ -33,7 +39,7 @@ up-esp-rs:
   devcontainer up --workspace-folder workspaces/esp-rs
 
 build-esp-rs:
-  docker build -t kossnocorp/dev-esp-rs templates/esp-rs
+  docker buildx build --platform linux/amd64,linux/arm64 -t kossnocorp/dev-esp-rs templates/esp-rs
 
 publish-esp-rs:
   docker push kossnocorp/dev-esp-rs
