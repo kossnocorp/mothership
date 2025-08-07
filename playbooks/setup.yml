@@ -5,14 +5,33 @@
 
   tasks:
     - name: Update apt cache
+      when: ansible_os_family == "Debian"
       become: yes
       apt:
         update_cache: yes
         cache_valid_time: 3600
 
-    - name: Install fish
+    - name: Install Homebrew (macOS)
+      when: ansible_system == "Darwin"
+      become: yes
+      shell: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+      args:
+        creates: /opt/homebrew/bin/brew
+
+    - name: Update Homebrew (macOS)
+      homebrew:
+        update_homebrew: true
+
+    - name: Install fish (Debian)
+      when: ansible_os_family == "Debian"
       become: yes
       apt:
+        name: fish
+        state: present
+
+    - name: Install fish (macOS)
+      when: ansible_system == "Darwin"
+      homebrew:
         name: fish
         state: present
 
@@ -24,11 +43,27 @@
       set_fact:
         local_user: "{{ whoami_result.stdout }}"
 
-    - name: Set fish as default shell for local user
+    - name: Set fish as default shell (Linux)
+      when: ansible_system == "Linux"
       become: yes
       user:
         name: "{{ local_user }}"
         shell: /usr/bin/fish
+
+    - name: Add fish to /etc/shells (macOS)
+      when: ansible_system == "Darwin"
+      become: yes
+      lineinfile:
+        path: /etc/shells
+        line: /opt/homebrew/bin/fish
+        state: present
+
+    - name: Set fish as default shell (macOS)
+      when: ansible_system == "Darwin"
+      become: yes
+      command: "chsh -s /opt/homebrew/bin/fish {{ local_user }}"
+      register: chsh_result
+      changed_when: chsh_result.rc == 0
 
     - name: Install Starship
       become: yes
@@ -37,12 +72,11 @@
         creates: /usr/local/bin/starship
 
     - name: Install chezmoi
-      shell: sh -c "$(curl -fsLS get.chezmoi.io)" -- -b /home/{{ local_user }}/.local/bin
+      shell: sh -c "$(curl -fsLS get.chezmoi.io)" -- -b {{ ansible_env.HOME }}/.local/bin
       args:
-        creates: /home/{{ local_user }}/.local/bin/chezmoi
+        creates: "{{ ansible_env.HOME }}/.local/bin/chezmoi"
 
     - name: Initialize dotfiles
       shell: chezmoi init --apply kossnocorp
-      become_user: "{{ local_user }}"
       args:
-        creates: /home/{{ local_user }}/.local/share/chezmoi
+        creates: "{{ ansible_env.HOME }}/.local/share/chezmoi"
