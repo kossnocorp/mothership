@@ -1,0 +1,48 @@
+---
+- name: Setup development machine
+  hosts: localhost
+  connection: local
+
+  tasks:
+    - name: Update apt cache
+      become: yes
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Install fish
+      become: yes
+      apt:
+        name: fish
+        state: present
+
+    - name: Get local user
+      local_action: command whoami
+      register: whoami_result
+
+    - name: Set local user fact
+      set_fact:
+        local_user: "{{ whoami_result.stdout }}"
+
+    - name: Set fish as default shell for local user
+      become: yes
+      user:
+        name: "{{ local_user }}"
+        shell: /usr/bin/fish
+
+    - name: Install Starship
+      become: yes
+      shell: curl -sS https://starship.rs/install.sh | sh -s -- --yes
+      args:
+        creates: /usr/local/bin/starship
+
+    - name: Install chezmoi
+      shell: sh -c "$(curl -fsLS get.chezmoi.io)" -- -b /home/{{ local_user }}/.local/bin
+      args:
+        creates: /home/{{ local_user }}/.local/bin/chezmoi
+
+    - name: Initialize dotfiles
+      shell: chezmoi init --apply kossnocorp
+      become_user: "{{ local_user }}"
+      args:
+        creates: /home/{{ local_user }}/.local/share/chezmoi

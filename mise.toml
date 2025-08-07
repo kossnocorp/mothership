@@ -1,3 +1,10 @@
 [tools]
+# Stack
 node = "lts"
+pipx = "latest"
+# Infra
+"pipx:ansible-core" = "latest"
+# AI
+"npm:@anthropic-ai/claude-code" = "latest"
+# Tools
 just = "latest"
