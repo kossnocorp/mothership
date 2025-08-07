@@ -1,6 +1,7 @@
 [tools]
 # Stack
 node = "lts"
+python = "3.13"
 pipx = "latest"
 # Infra
 "pipx:ansible-core" = "latest"
