@@ -30,20 +30,20 @@ inventory="setup/playbooks/inventory.ini"
 
 # Install fish
 echo "🚧 Setting up fish..."
-ansible-playbook $playbooks/fish.yaml --inventory=$inventory --become
+ansible-playbook $playbooks/fish.yaml --inventory=$inventory
 
 # Install Starship
 echo "🚧 Setting up Starship..."
-ansible-playbook $playbooks/starship.yaml --inventory=$inventory --become
+ansible-playbook $playbooks/starship.yaml --inventory=$inventory
 
 # Install chezmoi
 echo "🚧 Setting up chezmoi..."
-ansible-playbook $playbooks/chezmoi.yaml --inventory=$inventory --become --extra-vars "GITHUB_USERNAME=$GITHUB_USERNAME"
+ansible-playbook $playbooks/chezmoi.yaml --inventory=$inventory --extra-vars "GITHUB_USERNAME=$GITHUB_USERNAME"
 
 # Install mise
 echo "🚧 Setting up mise..."
-ansible-playbook $playbooks/mise.yaml --inventory=$inventory --become
+ansible-playbook $playbooks/mise.yaml --inventory=$inventory
 
 # Install Neovim
 echo "🚧 Setting up NeoVim..."
-ansible-playbook $playbooks/neovim.yaml --inventory=$inventory --become
+ansible-playbook $playbooks/neovim.yaml --inventory=$inventory
