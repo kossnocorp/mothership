@@ -7,7 +7,7 @@ publish: publish-base publish-node publish-rust publish-esp-rs
 # Base
 
 build-base:
-  docker buildx build --platform linux/amd64,linux/arm64 -t kossnocorp/dev-base templates/base
+  docker buildx build --platform linux/amd64,linux/arm64 --file templates/base/Dockerfile --tag kossnocorp/dev-base .
 
 publish-base:
   docker push kossnocorp/dev-base

@@ -1,32 +1,42 @@
-FROM mcr.microsoft.com/devcontainers/base:ubuntu
+FROM mcr.microsoft.com/devcontainers/base:ubuntu24.04
+
+# System
+ENV DEBIAN_FRONTEND=noninteractive
 
 # User
 ENV USER="vscode"
 USER "$USER"
-ENV HOME="/home/$USER"
 
-# Env
-ENV DEBIAN_FRONTEND=noninteractive
-ENV PATH="$HOME/.local/bin:$PATH"
+# Install Ansible
+COPY ./setup/scripts/ansible.sh /tmp/ansible.sh
+RUN sudo chmod +x /tmp/ansible.sh \
+  && /tmp/ansible.sh
 
-# Fish
-RUN sudo apt-get update \
-  && sudo apt-get install -y fish \
-  && mkdir -p "$HOME/.config/fish/completions"
+# Playbooks
 
-# mise-en-place
-RUN curl https://mise.run | sh \
-  && echo "if status is-interactive\n  mise activate fish | source\nelse\n  mise activate fish --shims | source\nend\n" >> ~/.config/fish/config.fish \
-  && PATH="$HOME/.local/bin:$PATH" \
-  && mise use -g usage \
-  && mise completion fish > ~/.config/fish/completions/mise.fish
+# Consts
+ENV PLAYBOOKS="./setup/playbooks"
+ENV INVENTORY="/tmp/inventory.ini"
 
-# Deps
-RUN sudo apt-get update \
-  && sudo apt-get install -y neovim
+# Inventory
+COPY "$PLAYBOOKS/inventory.ini" "$INVENTORY"
 
-# Stack and tools
-COPY mise.toml "$HOME/.config/mise/mise.toml"
-RUN sudo chown "$USER:$USER" "$HOME/.config/mise/mise.toml"
-RUN eval "$(mise activate bash --shims)" \
-  && mise install
+# Install fish
+COPY "$PLAYBOOKS/fish.yaml" "$PLAYBOOKS/fish.yaml"
+RUN ansible-playbook "$PLAYBOOKS/fish.yaml" --inventory="$INVENTORY"
+
+# Install Starship
+COPY "$PLAYBOOKS/starship.yaml" "$PLAYBOOKS/starship.yaml"
+RUN ansible-playbook "$PLAYBOOKS/starship.yaml" --inventory="$INVENTORY"
+
+# Install chezmoi
+COPY "$PLAYBOOKS/chezmoi.yaml" "$PLAYBOOKS/chezmoi.yaml"
+RUN ansible-playbook "$PLAYBOOKS/chezmoi.yaml" --inventory="$INVENTORY"
+
+# Install mise
+COPY "$PLAYBOOKS/mise.yaml" "$PLAYBOOKS/mise.yaml"
+RUN ansible-playbook "$PLAYBOOKS/mise.yaml" --inventory="$INVENTORY"
+
+# Install Neovim
+COPY "$PLAYBOOKS/neovim.yaml" "$PLAYBOOKS/neovim.yaml"
+RUN ansible-playbook "$PLAYBOOKS/neovim.yaml" --inventory="$INVENTORY"

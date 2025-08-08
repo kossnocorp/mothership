@@ -21,7 +21,14 @@
         mise ls usage || mise use -g usage
       changed_when: false
 
+    - name: Create fish completions directory
+      file:
+        path: "{{ ansible_env.HOME }}/.config/fish/completions"
+        state: directory
+
     - name: Add fish completions
-      shell: "mise completion fish > {{ ansible_env.HOME }}/.config/fish/completions/mise.fish"
+      shell: |
+        export PATH="$HOME/.local/bin:$PATH"
+        mise completion fish > {{ ansible_env.HOME }}/.config/fish/completions/mise.fish
       args:
         creates: "{{ ansible_env.HOME }}/.config/fish/completions/mise.fish"
