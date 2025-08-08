@@ -17,7 +17,6 @@
       changed_when: false
 
     - name: Install Neovim
-      become: yes
       ansible.builtin.package:
         name: neovim
         state: present

@@ -13,10 +13,10 @@ if ! command -v ansible-playbook &> /dev/null; then
     brew install ansible
   else
     # Linux (Debian/Ubuntu)
-    sudo apt-get update
-    sudo apt install software-properties-common --yes
-    sudo add-apt-repository --yes --update ppa:ansible/ansible
-    sudo apt-get install --yes ansible
+    echo "$SUDO_PASSWORD" | sudo -S apt-get update
+    echo "$SUDO_PASSWORD" | sudo -S apt install software-properties-common --yes
+    echo "$SUDO_PASSWORD" | sudo -S add-apt-repository --yes --update ppa:ansible/ansible
+    echo "$SUDO_PASSWORD" | sudo -S apt-get install --yes ansible
   fi
 else
   echo "✅ Ansible is already installed, skipping..."
