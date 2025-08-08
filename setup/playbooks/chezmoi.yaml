@@ -10,7 +10,7 @@
         creates: "{{ ansible_env.HOME }}/.local/bin/chezmoi"
 
     - name: Set up ~/.local/bin in PATH
-      include: local-bin.yaml
+      include_tasks: local-bin-tasks.yaml
 
     - name: Initialize dotfiles
       when: ansible_env.GITHUB_USERNAME is defined

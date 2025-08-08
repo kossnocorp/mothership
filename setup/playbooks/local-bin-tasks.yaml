@@ -1,0 +1,28 @@
+---
+- name: Ensure ~/.local/bin directory exists
+  file:
+    path: "{{ ansible_env.HOME }}/.local/bin"
+    state: directory
+
+- name: Add ~/.local/bin to bash config
+  lineinfile:
+    path: "{{ ansible_env.HOME }}/.bashrc"
+    line: 'export PATH="$HOME/.local/bin:$PATH"'
+    create: yes
+
+- name: Add ~/.local/bin to zsh config
+  lineinfile:
+    path: "{{ ansible_env.HOME }}/.zshrc"
+    line: 'export PATH="$HOME/.local/bin:$PATH"'
+    create: yes
+
+- name: Ensure fish config directory exists
+  file:
+    path: "{{ ansible_env.HOME }}/.config/fish"
+    state: directory
+
+- name: Add ~/.local/bin to fish config
+  lineinfile:
+    path: "{{ ansible_env.HOME }}/.config/fish/config.fish"
+    line: 'fish_add_path "$HOME/.local/bin"'
+    create: yes

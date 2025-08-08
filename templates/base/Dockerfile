@@ -24,6 +24,9 @@ ENV INVENTORY="/tmp/inventory.ini"
 # Inventory
 COPY "$PLAYBOOKS/inventory.ini" "$INVENTORY"
 
+# Shared playbooks
+COPY "$PLAYBOOKS/local-bin-tasks.yaml" "$PLAYBOOKS/local-bin-tasks.yaml"
+
 # Install fish
 COPY "$PLAYBOOKS/fish.yaml" "$PLAYBOOKS/fish.yaml"
 RUN ansible-playbook "$PLAYBOOKS/fish.yaml" --inventory="$INVENTORY"

@@ -10,7 +10,7 @@
         creates: "{{ ansible_env.HOME }}/.local/bin/mise"
 
     - name: Set up ~/.local/bin in PATH
-      include: local-bin.yaml
+      include_tasks: local-bin-tasks.yaml
 
     - name: Set up bash shell
       lineinfile:
