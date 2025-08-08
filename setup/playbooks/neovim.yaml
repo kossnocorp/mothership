@@ -4,19 +4,28 @@
   connection: local
 
   tasks:
-    - name: Update package cache (Debian/Ubuntu)
+    - name: Debian/Ubuntu set up
       when: ansible_os_family == "Debian"
       become: yes
-      apt:
-        update_cache: yes
-        cache_valid_time: 3600
+      block:
+        - name: Update apt cache
+          apt:
+            update_cache: yes
+            cache_valid_time: 3600
 
-    - name: Update package cache (macOS)
+        - name: Install Neovim
+          apt:
+            name: neovim
+            state: present
+
+    - name: macOS set up
       when: ansible_system == "Darwin"
-      command: brew update
-      changed_when: false
+      block:
+        - name: Update Homebrew
+          homebrew:
+            update_homebrew: true
 
-    - name: Install Neovim
-      ansible.builtin.package:
-        name: neovim
-        state: present
+        - name: Install Neovim
+          homebrew:
+            name: neovim
+            state: present
