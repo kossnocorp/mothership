@@ -1,11 +1,10 @@
 [tools]
 # Stack
 node = "lts"
-python = "3.13"
-pipx = "latest"
-# Infra
-"pipx:ansible-core" = { version = "latest", postinstall = "ansible-galaxy collection install community.general" }
 # AI
 "npm:@anthropic-ai/claude-code" = "latest"
 # Tools
 just = "latest"
+
+[settings]
+experimental = true

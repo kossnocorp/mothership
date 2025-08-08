@@ -1,0 +1,11 @@
+---
+- name: Set up Starship
+  hosts: localhost
+  connection: local
+
+  tasks:
+    - name: Install Starship
+      become: yes
+      shell: curl -sS https://starship.rs/install.sh | sh -s -- --yes
+      args:
+        creates: /usr/local/bin/starship

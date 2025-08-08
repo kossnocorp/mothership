@@ -1,0 +1,57 @@
+---
+- name: Set up fish
+  hosts: localhost
+  connection: local
+
+  tasks:
+    - name: Get local user
+      local_action: command whoami
+      register: whoami_result
+
+    - name: Set local user fact
+      set_fact:
+        local_user: "{{ whoami_result.stdout }}"
+
+    - name: Debian/Ubuntu set up
+      when: ansible_os_family == "Debian"
+      become: yes
+      block:
+        - name: Update apt cache
+          apt:
+            update_cache: yes
+            cache_valid_time: 3600
+
+        - name: Install fish
+          apt:
+            name: fish
+            state: present
+
+        - name: Set fish as default shell
+          user:
+            name: "{{ local_user }}"
+            shell: /usr/bin/fish
+
+    - name: macOS set up
+      when: ansible_system == "Darwin"
+      block:
+        - name: Update Homebrew
+          homebrew:
+            update_homebrew: true
+
+        - name: Install fish
+          homebrew:
+            name: fish
+            state: present
+
+        - name: Add fish to /etc/shells
+          become: yes
+          lineinfile:
+            path: /etc/shells
+            line: /opt/homebrew/bin/fish
+            state: present
+
+        - name: Set fish as default shell
+          become: yes
+          command: "chsh -s /opt/homebrew/bin/fish {{ local_user }}"
+          register: chsh_result
+          changed_when: chsh_result.rc == 0

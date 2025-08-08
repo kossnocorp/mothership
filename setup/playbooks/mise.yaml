@@ -1,0 +1,16 @@
+---
+- name: Set up mise
+  hosts: localhost
+  connection: local
+
+  tasks:
+    - name: Install mise
+      shell: curl https://mise.run | sh
+      args:
+        creates: "{{ ansible_env.HOME }}/.local/bin/mise"
+
+    - name: Set up fish
+      lineinfile:
+        path: "{{ ansible_env.HOME }}/.config/fish/config.fish"
+        line: "mise activate fish | source"
+        create: yes
