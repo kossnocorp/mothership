@@ -1,10 +1,13 @@
 FROM mcr.microsoft.com/devcontainers/base:ubuntu24.04
 
-# System
+# Base
+
+# Vars
 ENV DEBIAN_FRONTEND=noninteractive
+ENV USER="vscode"
+ENV HOME="/home/$USER"
 
 # User
-ENV USER="vscode"
 USER "$USER"
 
 # Install Ansible

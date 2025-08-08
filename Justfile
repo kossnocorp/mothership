@@ -19,7 +19,7 @@ up-node:
   devcontainer up --workspace-folder workspaces/node
 
 build-node:
-  docker buildx build --platform linux/amd64,linux/arm64 -t kossnocorp/dev-node templates/node
+  docker buildx build --platform linux/amd64,linux/arm64 --file templates/stack/Dockerfile --build-arg STACK=node --tag kossnocorp/dev-node .
 
 publish-node:
   docker push kossnocorp/dev-node
@@ -27,7 +27,7 @@ publish-node:
 # Rust
 
 build-rust:
-  docker buildx build --platform linux/amd64,linux/arm64 -t kossnocorp/dev-rust templates/rust
+  docker buildx build --platform linux/amd64,linux/arm64 --file templates/stack/Dockerfile --build-arg STACK=rust --tag kossnocorp/dev-rust .
 
 publish-rust:
   docker push kossnocorp/dev-rust

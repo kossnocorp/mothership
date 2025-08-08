@@ -1,6 +1,4 @@
 [tools]
-# Shell
-starship = "latest"
 # Stack
 node = { version = "latest", postinstall = "corepack enable" }
 rust = "latest"
@@ -12,4 +10,4 @@ cargo-binstall = "latest"
 [settings]
 experimental = true
 cargo.binstall = true
-idiomatic_version_file_enable_tools = ["node"]
+idiomatic_version_file_enable_tools = ["node", "rust"]

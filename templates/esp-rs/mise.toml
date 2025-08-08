@@ -1,6 +1,4 @@
 [tools]
-# Shell
-starship = "latest"
 # Stack
 rust = "latest"
 # Tools

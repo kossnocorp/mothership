@@ -9,6 +9,21 @@
       args:
         creates: "{{ ansible_env.HOME }}/.local/bin/mise"
 
+    - name: Set up ~/.local/bin in PATH
+      include: local-bin.yaml
+
+    - name: Set up bash shell
+      lineinfile:
+        path: "{{ ansible_env.HOME }}/.bashrc"
+        line: 'eval "$(mise activate bash)"'
+        create: yes
+
+    - name: Set up zsh shell
+      lineinfile:
+        path: "{{ ansible_env.HOME }}/.zshrc"
+        line: 'eval "$(mise activate zsh)"'
+        create: yes
+
     - name: Set up fish shell
       lineinfile:
         path: "{{ ansible_env.HOME }}/.config/fish/config.fish"
