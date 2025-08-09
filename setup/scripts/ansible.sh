@@ -6,18 +6,26 @@
 set -e
 
 if ! command -v ansible-playbook &> /dev/null; then
-  echo "🚧 Installing Ansible..."
+  printf "\n🚧 Installing Ansible...\n\n"
+
   if [[ "$OSTYPE" == "darwin"* ]]; then
     # macOS
-    brew update
-    brew install ansible
+    $BREW_BIN update
+    $BREW_BIN install ansible
   else
+    # TODO: Test if I need to rollback to this approach:
+    # echo "$SUDO_PASSWORD" | sudo -S apt-get update
+    # echo "$SUDO_PASSWORD" | sudo -S apt install software-properties-common --yes
+    # echo "$SUDO_PASSWORD" | sudo -S add-apt-repository --yes --update ppa:ansible/ansible
+    # echo "$SUDO_PASSWORD" | sudo -S apt-get install --yes ansible
     # Linux (Debian/Ubuntu)
-    echo "$SUDO_PASSWORD" | sudo -S apt-get update
-    echo "$SUDO_PASSWORD" | sudo -S apt install software-properties-common --yes
-    echo "$SUDO_PASSWORD" | sudo -S add-apt-repository --yes --update ppa:ansible/ansible
-    echo "$SUDO_PASSWORD" | sudo -S apt-get install --yes ansible
+    sudo apt-get update
+    sudo apt install software-properties-common --yes
+    sudo add-apt-repository --yes --update ppa:ansible/ansible
+    sudo apt-get install --yes ansible
   fi
+
+  echo "🟢 Ansible successfully installed!"
 else
-  echo "✅ Ansible is already installed, skipping..."
+  echo "⚪️ Ansible is already installed."
 fi

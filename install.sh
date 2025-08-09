@@ -5,31 +5,149 @@
 
 set -e
 
-# Prepare
+printf "⚡️ Setting up development environment...\n\n"
 
-# Prompt sudo passwor
+
+#region Prepare
+
+#region .env
+
+# Try loading .env
+if [ -f .env ]; then
+  set -a && source .env && set +a
+  printf "🔵 Loaded environment variables from .env\n\n"
+fi
+
+#endregion
+
+#region GitHub token
+
+# Test if GITHUB_TOKEN is set
+if [ -n "$GITHUB_TOKEN" ]; then
+  last=${GITHUB_TOKEN: -4}
+  echo "🔵 Using GitHub access token: ****${last}"
+else
+  echo "🟡 GITHUB_TOKEN is not set, mise installs might take longer than usual."
+  # Wait for user to confirm continue
+  read -p "❔ Press Enter to continue or Ctrl+C to exit..."
+  printf "\n"
+fi
+
+# Clear GITHUB_TOKEN to prevent leaks
+github_token="$GITHUB_TOKEN"
+export GITHUB_TOKEN=""
+
+#endregion
+
+#region GitHub username
+
+# Assign GitHub username
+SKIP_DOTFILES=${SKIP_DOTFILES:-0}
+if [ -n "$GITHUB_USERNAME" ]; then
+  echo "🔵 Using GitHub username $GITHUB_USERNAME"
+else
+  echo "🟠 I need your GitHub username to install dotfiles from (USERNAME/dotfiles)."
+  while true; do
+    read -p "👤 Enter your GitHub username: " GITHUB_USERNAME
+    if [ -n "$GITHUB_USERNAME" ]; then
+      break
+    else
+      echo "🟠 Username is empty, dotfiles won't install."
+      read -r -p "❔️️ Skip dotfiles installation? [Y/n] " yn
+      case "$yn" in
+        [Nn]*) ;;
+        *)
+          echo "🟡 Skipping dotfiles installation."
+          break
+          ;;
+      esac
+    fi
+  done
+
+  if [ -n "$GITHUB_USERNAME" ]; then
+    echo "🔵 Using GitHub username: $GITHUB_USERNAME"
+    echo "🟣 Set GITHUB_USERNAME to skip the prompt next time."
+  fi
+fi
+
+export GITHUB_USERNAME
+
+printf "\n"
+
+#endregion
+
+#region Sudo password
+
+activate_sudo () {
+  printf "%s\n" "${SUDO_PASSWORD:-$sudo_password}" | sudo -S -p "" -v >/dev/null 2>&1
+}
+
+keep_sudo_alive() {
+  while true; do
+    activate_sudo
+    sleep 30
+  done
+}
+
+has_password_env=false
+if [ -n "$SUDO_PASSWORD" ]; then
+  echo "🔵 Using sudo password ****"
+  has_password_env=true
+fi
+
 while true; do
-  echo "🔒 Enter sudo password:"
-  read -s SUDO_PASSWORD
-  echo "🚧 Verifying password..."
+  # Prompt sudo password
+  if [ -z "$SUDO_PASSWORD" ]; then
+    if [ "$explained_password" != true ]; then
+      echo "🟠 I need your sudo password for installing dependencies."
+      explained_password=true
+    fi
+    echo "🔒 Enter sudo password:"
+    read -s SUDO_PASSWORD
+  fi
 
-  # Test if the password is correct
-  if echo "$SUDO_PASSWORD" | sudo -S true 2>/dev/null; then
-    echo "👍 The password is correct."
+  # Test if the sudo password is correct
+  echo "🚧 Verifying password..."
+  if activate_sudo; then
+    echo "🟢 The sudo password is correct."
+    if [ "$has_password_env" != true ]; then
+      echo "🟣 Set SUDO_PASSWORD to skip the prompt next time."
+    fi
+    printf "\n"
     break
   else
-    echo "🛑 Incorrect password. Please try again."
+    echo "🔴 Incorrect password. Please try again."
+    # Clear to force re-prompt next iteration
+    SUDO_PASSWORD=""
   fi
 done
 
-export ANSIBLE_BECOME_PASS=$SUDO_PASSWORD
-export SUDO_PASSWORD
+# Keep sudo alive
+activate_sudo
+keep_sudo_alive & SUDO_KEEPALIVE_PID=$!
+trap 'kill "$SUDO_KEEPALIVE_PID" 2>/dev/null' EXIT
 
-# Assign GitHub username
-GITHUB_USERNAME="${GITHUB_USERNAME:-kossnocorp}"
-echo "💡 Using GitHub username: $GITHUB_USERNAME (override it with GITHUB_USERNAME)"
+# Clear SUDO_PASSWORD to prevent leaks
+sudo_password="$SUDO_PASSWORD"
+export SUDO_PASSWORD=""
 
-# Base
+#endregion
+
+#region Consts
+
+export BREW_BIN="/opt/homebrew/bin/brew"
+
+#endregion
+
+#endregion
+
+#endregion
+
+#region Install
+
+echo "⚡️ Installing dependencies..."
+
+#region Base
 
 # Install Homebrew (macOS only)
 ./setup/scripts/homebrew.sh
@@ -37,7 +155,13 @@ echo "💡 Using GitHub username: $GITHUB_USERNAME (override it with GITHUB_USER
 # Install Ansible
 ./setup/scripts/ansible.sh
 
-# Playbooks
+printf "\n"
+
+#endregion
+
+#region Playbooks
+
+export ANSIBLE_BECOME_PASS="$sudo_password"
 
 # Consts
 playbooks="setup/playbooks"
@@ -62,5 +186,12 @@ ansible-playbook $playbooks/mise.yaml --inventory=$inventory
 # Install Neovim
 echo "🚧 Setting up NeoVim..."
 ansible-playbook $playbooks/neovim.yaml --inventory=$inventory
+
+# Clear ANSIBLE_BECOME_PASS to prevent leaks
+ANSIBLE_BECOME_PASS=""
+
+#endregion
+
+#endregion
 
 echo "⭐️ Installation complete! Please restart your terminal to apply changes."
