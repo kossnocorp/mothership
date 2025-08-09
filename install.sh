@@ -134,12 +134,6 @@ export SUDO_PASSWORD=""
 
 #endregion
 
-#region Consts
-
-export BREW_BIN="/opt/homebrew/bin/brew"
-
-#endregion
-
 #endregion
 
 #endregion

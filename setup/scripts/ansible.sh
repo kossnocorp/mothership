@@ -9,6 +9,8 @@ if ! command -v ansible-playbook &> /dev/null; then
   printf "\n🚧 Installing Ansible...\n\n"
 
   if [[ "$OSTYPE" == "darwin"* ]]; then
+    . ./export-brew-bin.sh
+
     # macOS
     $BREW_BIN update
     $BREW_BIN install ansible

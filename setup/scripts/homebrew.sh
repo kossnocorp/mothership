@@ -4,6 +4,8 @@
 # the environment for macOS systems.
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
+  . ./export-brew-bin.sh
+
   #region Install
 
   if ! command -v "$BREW_BIN" &> /dev/null; then
@@ -20,20 +22,35 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
 
   shell_integration="eval \"\$($BREW_BIN shellenv)\""
 
-  if ! grep -q "$shell_integration" ~/.bashrc; then
-    printf "\n$shell_integration\n" >> ~/.bashrc
+  # Bash
+  if ! grep -q "$shell_integration" ~/.bashrc 2>/dev/null; then
     echo "🚧 Adding Homebrew to bash shell configuration..."
+    cat <<EOF >> ~/.bashrc
+if [[ "\$OSTYPE" == "darwin"* ]]; then
+  $shell_integration
+fi
+EOF
   fi
 
-  if ! grep -q "$shell_integration" ~/.zshrc; then
-    printf "\n$shell_integration\n" >> ~/.zshrc
+  # Zsh
+  if ! grep -q "$shell_integration" ~/.zshrc 2>/dev/null; then
     echo "🚧 Adding Homebrew to zsh shell configuration..."
+    cat <<EOF >> ~/.zshrc
+if [[ "\$OSTYPE" == "darwin"* ]]; then
+  $shell_integration
+fi
+EOF
   fi
 
-  if ! grep -q "$shell_integration" ~/.config/fish/config.fish; then
-    mkdir -p ~/.config/fish/
-    printf "\n$shell_integration\n" >> ~/.config/fish/config.fish
+  # Fish
+  if ! grep -q "$shell_integration" ~/.config/fish/config.fish 2>/dev/null; then
     echo "🚧 Adding Homebrew to fish shell configuration..."
+    mkdir -p ~/.config/fish/
+    cat <<EOF >> ~/.config/fish/config.fish
+if test (uname) = Darwin
+  $shell_integration
+end
+EOF
   fi
 
   #endregion
