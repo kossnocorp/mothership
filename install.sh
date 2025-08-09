@@ -5,8 +5,9 @@
 
 set -e
 
-printf "⚡️ Setting up development environment...\n\n"
+echo "⭐️ Installation complete!"
 
+printf "⚡️ Setting up development environment...\n\n"
 
 #region Prepare
 
@@ -194,4 +195,21 @@ ANSIBLE_BECOME_PASS=""
 
 #endregion
 
-echo "⭐️ Installation complete! Please restart your terminal to apply changes."
+echo "⭐️ Installation complete!"
+
+# Detect shell and suggest command to restart
+
+printf "\n💡 To activate changes, restart your terminal"
+
+case "$(basename "$SHELL")" in
+  bash) restart_cmd='source ~/.bashrc' ;;
+  zsh)  restart_cmd='source ~/.zshrc' ;;
+  fish) restart_cmd='exec fish' ;;
+  *)    restart_cmd='' ;;
+esac
+
+if [ -n "$restart_cmd" ]; then
+   printf "or run:\n\n    $restart_cmd\n"
+else
+  printf "\n"
+fi

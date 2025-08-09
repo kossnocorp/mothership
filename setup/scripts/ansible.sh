@@ -27,5 +27,5 @@ if ! command -v ansible-playbook &> /dev/null; then
 
   echo "🟢 Ansible successfully installed!"
 else
-  echo "⚪️ Ansible is already installed."
+  printf "\n⚪️ Ansible found.\n"
 fi

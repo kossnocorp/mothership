@@ -11,7 +11,7 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     NONINTERACTIVE=1 bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     echo "🟢 Homebrew successfully installed!"
   else
-    echo "⚪️ Homebrew is already installed."
+    printf "\n⚪️ Homebrew found.\n"
   fi
 
   #endregion
@@ -38,5 +38,5 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
 
   #endregion
 else
-  echo "⚫️️ Skipping Homebrew installation for non-macOS systems."
+  printf "\n⚫️️ Skipping Homebrew installation for non-macOS systems.\n"
 fi
