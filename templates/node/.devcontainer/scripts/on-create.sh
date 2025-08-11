@@ -4,10 +4,14 @@
 
 set -e
 
+# Activate mise
+eval "$(mise activate bash --shims)"
+
 # Trust mise setup first
 mise trust
 
-eval "$(mise activate bash --shims)"
+# Update mise
+mise self-update -y
 
-# Install just completions
-just --completions fish > ~/.config/fish/completions/just.fish
+# Install project mise dependencies
+mise install
