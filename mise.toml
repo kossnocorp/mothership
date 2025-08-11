@@ -1,10 +1,12 @@
 [tools]
 # Stack
 node = "lts"
+# Tools
+# Dev Container CLI
+"npm:@devcontainers/cli" = "latest"
+just = "latest"
 # AI
 "npm:@anthropic-ai/claude-code" = "latest"
-# Tools
-just = "latest"
 
 [settings]
 experimental = true
