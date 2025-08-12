@@ -1,5 +1,5 @@
 {
-  "name": "Node.js",
+  "name": "${templateOption:name}",
 
   "build": { "dockerfile": "Dockerfile", "context": ".." },
 

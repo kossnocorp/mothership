@@ -1,0 +1,28 @@
+# Global Node.js mise config
+
+[tools]
+## Stack
+rust = "latest"
+node = { version = "latest", postinstall = "corepack enable" }
+
+## Tools
+# Install Rust-based binaries instead of compiling
+cargo-binstall = "latest"
+# Better make
+just = "latest"
+# Better grep
+ripgrep = "latest"
+# Better find
+fd = "latest"
+# Better cat
+bat = "latest"
+# Better ls
+"cargo:exa" = "latest"
+
+[settings]
+# Enable extra features
+experimental = true
+# Enable cargo binstall
+cargo.binstall = true
+# Use rust-toolchain.toml, .tool-versions, etc.
+idiomatic_version_file_enable_tools = ["rust", "node"]

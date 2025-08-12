@@ -1,25 +1,9 @@
 [tools]
 ## Stack
-rust = "latest"
-node = { version = "latest", postinstall = "corepack enable" }
-## Tools
-# Install Rust-based binaries instead of compiling
-cargo-binstall = "latest"
-# Better make
-just = "latest"
-# Better grep
-ripgrep = "latest"
-# Better find
-fd = "latest"
-# Better cat
-bat = "latest"
-# Better ls
-"cargo:exa" = "latest"
+node = { version = "lts", postinstall = "corepack enable" }
 
 [settings]
 # Enable extra features
 experimental = true
-# Enable cargo binstall
-cargo.binstall = true
-# Use rust-toolchain.toml, .tool-versions, etc.
-idiomatic_version_file_enable_tools = ["rust", "node"]
+# Consume Node.js version from .nvmrc, .tool-versions, etc.
+idiomatic_version_file_enable_tools = ["node"]

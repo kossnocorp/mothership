@@ -1,5 +1,5 @@
 {
-  "name": "Rust",
+  "name": "${templateOption:name}",
 
   "build": { "dockerfile": "Dockerfile", "context": ".." },
 

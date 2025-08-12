@@ -1,8 +1,7 @@
 #! /usr/bin/env bash
 
 # The scripts installs stack using global mise config. It is used in
-# language-specific images right after copying the config to
-# the environment for macOS systems.
+# images as the last step.
 
 # Consts
 mise_config="$HOME/.config/mise/mise.toml"

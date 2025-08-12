@@ -8,5 +8,8 @@ just = "latest"
 # AI
 "npm:@anthropic-ai/claude-code" = "latest"
 
+[env]
+_.file = '.env.maintain'
+
 [settings]
 experimental = true

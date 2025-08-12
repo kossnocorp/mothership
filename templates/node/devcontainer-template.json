@@ -1,9 +1,15 @@
 {
   "id": "node",
-  "version": "0.1.0",
+  "version": "0.5.1",
   "name": "node",
   "description": "Node.js development environment",
   "publisher": "Sasha Koss <koss@nocorp.me>",
   "platforms": ["Node.js"],
-  "optionalPaths": []
+  "optionalPaths": [],
+  "options": {
+    "name": {
+      "type": "string",
+      "description": "Name of the dev container"
+    }
+  }
 }

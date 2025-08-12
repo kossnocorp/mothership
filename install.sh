@@ -13,11 +13,15 @@ printf "⚡️ Setting up development environment...\n\n"
 
 #region .env
 
-# Try loading .env
-if [ -f .env ]; then
+# Try loading .env.install
+if [ -f .env.install ]; then
+  set -a && source .env.install && set +a
+  printf "🔵 Loaded environment variables from .env.install\n\n"
+elif [ -f .env ]; then
   set -a && source .env && set +a
   printf "🔵 Loaded environment variables from .env\n\n"
 fi
+
 
 #endregion
 

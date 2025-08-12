@@ -5,11 +5,19 @@ rust = "latest"
 ## Tools
 # Install Rust-based binaries instead of compiling
 cargo-binstall = "latest"
+# Better make
+just = "latest"
+# Better grep
+ripgrep = "latest"
+# Better find
+fd = "latest"
+# Better cat
+bat = "latest"
+# Better ls
+"cargo:exa" = "latest"
 
 [settings]
 # Enable extra features
 experimental = true
 # Enable cargo binstall
 cargo.binstall = true
-# Consume Rust toolchain settings from rust-toolchain.toml
-idiomatic_version_file_enable_tools = ["rust"]
