@@ -6,6 +6,8 @@ rust = "latest"
 node = { version = "latest", postinstall = "corepack enable" }
 
 ## Tools
+# Usage command
+usage = "latest"
 # Install Rust-based binaries instead of compiling
 cargo-binstall = "latest"
 # Better make

@@ -4,11 +4,18 @@
 
 set -e
 
-# Activate mise
-eval "$(mise activate bash --shims)"
+# Pull git submodules
+git submodule update --recursive --init --remote
+
+# Trust all mise configs
+mise trust --yes --all
+git submodule foreach --recursive "mise trust"
 
 # Update mise
 mise self-update -y
 
-# Install project mise dependencies
+# Install stack
 mise install
+
+# Install dependencies
+cargo build || echo "🟡 Cargo build failed, but that's ok"

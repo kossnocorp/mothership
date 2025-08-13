@@ -14,6 +14,16 @@ devcontainer templates apply -t ghcr.io/kossnocorp/templates/node -a '{"name":"M
 
 ## Contributing
 
+### Images
+
+#### Testing Locally
+
+To connect to an image, use the following command (replace `dev-node:next` with the flavor and version you want to test, e.g., `dev-rust:latest`):
+
+```bash
+docker run -it --rm kossnocorp/dev-node:next bash
+```
+
 ### Dev Container Templates
 
 #### Creating New Template

@@ -25,27 +25,27 @@ ENV INVENTORY="/tmp/inventory.ini"
 COPY "$PLAYBOOKS/inventory.ini" "$INVENTORY"
 
 # Shared playbooks
-COPY "$PLAYBOOKS/local-bin-tasks.yaml" "$PLAYBOOKS/local-bin-tasks.yaml"
+COPY "$PLAYBOOKS/local-bin-tasks.yaml" "/tmp/local-bin-tasks.yaml"
 
 # Install fish
-COPY "$PLAYBOOKS/fish.yaml" "$PLAYBOOKS/fish.yaml"
-RUN ansible-playbook "$PLAYBOOKS/fish.yaml" --inventory="$INVENTORY"
+COPY "$PLAYBOOKS/fish.yaml" "/tmp/fish.yaml"
+RUN ansible-playbook "/tmp/fish.yaml" --inventory="$INVENTORY"
 
 # Install Starship
-COPY "$PLAYBOOKS/starship.yaml" "$PLAYBOOKS/starship.yaml"
-RUN ansible-playbook "$PLAYBOOKS/starship.yaml" --inventory="$INVENTORY"
+COPY "$PLAYBOOKS/starship.yaml" "/tmp/starship.yaml"
+RUN ansible-playbook "/tmp/starship.yaml" --inventory="$INVENTORY"
 
 # Install chezmoi
-COPY "$PLAYBOOKS/chezmoi.yaml" "$PLAYBOOKS/chezmoi.yaml"
-RUN ansible-playbook "$PLAYBOOKS/chezmoi.yaml" --inventory="$INVENTORY"
+COPY "$PLAYBOOKS/chezmoi.yaml" "/tmp/chezmoi.yaml"
+RUN ansible-playbook "/tmp/chezmoi.yaml" --inventory="$INVENTORY"
 
 # Install mise
-COPY "$PLAYBOOKS/mise.yaml" "$PLAYBOOKS/mise.yaml"
-RUN ansible-playbook "$PLAYBOOKS/mise.yaml" --inventory="$INVENTORY"
+COPY "$PLAYBOOKS/mise.yaml" "/tmp/mise.yaml"
+RUN ansible-playbook "/tmp/mise.yaml" --inventory="$INVENTORY"
 
 # Install Neovim
-COPY "$PLAYBOOKS/neovim.yaml" "$PLAYBOOKS/neovim.yaml"
-RUN ansible-playbook "$PLAYBOOKS/neovim.yaml" --inventory="$INVENTORY"
+COPY "$PLAYBOOKS/neovim.yaml" "/tmp/neovim.yaml"
+RUN ansible-playbook "/tmp/neovim.yaml" --inventory="$INVENTORY"
 
 # Install stack & tools
 COPY ./setup/configs/base/mise.toml "$HOME/.config/mise/mise.toml"
