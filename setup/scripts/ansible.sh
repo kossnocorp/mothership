@@ -5,11 +5,13 @@
 
 set -e
 
+DIR_NAME="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 if ! command -v ansible-playbook &> /dev/null; then
   printf "\n🚧 Installing Ansible...\n\n"
 
   if [[ "$OSTYPE" == "darwin"* ]]; then
-    . ./export-brew-bin.sh
+    . "$DIR_NAME/export-brew-bin.sh"
 
     # macOS
     $BREW_BIN update

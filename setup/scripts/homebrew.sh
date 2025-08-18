@@ -3,8 +3,12 @@
 # The scripts installs Homebrew. It is the first step in setting up
 # the environment for macOS systems.
 
+set -e
+
+DIR_NAME="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 if [[ "$OSTYPE" == "darwin"* ]]; then
-  . ./export-brew-bin.sh
+  . "$DIR_NAME/export-brew-bin.sh"
 
   #region Install
 
