@@ -3,6 +3,8 @@
 # The scripts installs stack using global mise config. It is used in
 # images as the last step.
 
+set -e
+
 # Consts
 mise_config="$HOME/.config/mise/mise.toml"
 
