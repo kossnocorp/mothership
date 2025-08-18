@@ -47,6 +47,14 @@ RUN ansible-playbook "/tmp/mise.yaml" --inventory="$INVENTORY"
 COPY "$PLAYBOOKS/neovim.yaml" "/tmp/neovim.yaml"
 RUN ansible-playbook "/tmp/neovim.yaml" --inventory="$INVENTORY"
 
+# Install age
+COPY "$PLAYBOOKS/age.yaml" "$PLAYBOOKS/age.yaml"
+RUN ansible-playbook "$PLAYBOOKS/age.yaml" --inventory="$INVENTORY"
+
+# Install SOPS
+COPY "$PLAYBOOKS/sops.yaml" "$PLAYBOOKS/sops.yaml"
+RUN ansible-playbook "$PLAYBOOKS/sops.yaml" --inventory="$INVENTORY"
+
 # Install stack & tools
 COPY ./setup/configs/base/mise.toml "$HOME/.config/mise/mise.toml"
 COPY ./setup/scripts/mise-config.sh /tmp/mise-config.sh
