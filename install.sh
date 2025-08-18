@@ -22,7 +22,6 @@ elif [ -f .env ]; then
   printf "🔵 Loaded environment variables from .env\n\n"
 fi
 
-
 #endregion
 
 #region GitHub token

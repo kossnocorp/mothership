@@ -7,12 +7,11 @@ publish-all: publish-base publish-node publish-rust
 # Base
 
 build-base:
-  docker buildx build --builder cloud-kossnocorp-mothership --platform linux/amd64 --file images/base/Dockerfile --tag kossnocorp/dev-base:amd64 .
-  docker buildx build --builder cloud-kossnocorp-mothership --platform linux/arm64 --file images/base/Dockerfile --tag kossnocorp/dev-base:arm64 .
-  docker buildx imagetools create --tag kossnocorp/dev-base:next kossnocorp/dev-base:amd64 kossnocorp/dev-base:arm64
+  docker buildx build --builder cloud-kossnocorp-mothership --platform linux/amd64 --file images/base/Dockerfile --tag kossnocorp/dev-base:amd64 --push .
+  docker buildx build --builder cloud-kossnocorp-mothership --platform linux/arm64 --file images/base/Dockerfile --tag kossnocorp/dev-base:arm64 --push .
 
 publish-base: build-base
-  docker buildx imagetools create --tag kossnocorp/dev-base:latest kossnocorp/dev-base:next
+  docker buildx imagetools create --tag kossnocorp/dev-base:latest kossnocorp/dev-base:amd64 kossnocorp/dev-base:arm64
 
 # Node.js
 
@@ -21,12 +20,11 @@ up-node:
   devcontainer up --workspace-folder workspaces/node
 
 build-node:
-  docker buildx build --builder cloud-kossnocorp-mothership --platform linux/amd64 --file images/stack/Dockerfile --build-arg STACK=node --tag kossnocorp/dev-node:amd64 .
-  docker buildx build --builder cloud-kossnocorp-mothership --platform linux/arm64 --file images/stack/Dockerfile --build-arg STACK=node --tag kossnocorp/dev-node:arm64 .
-  docker buildx imagetools create --tag kossnocorp/dev-node:next kossnocorp/dev-node:amd64 kossnocorp/dev-node:arm64
+  docker buildx build --builder cloud-kossnocorp-mothership --platform linux/amd64 --file images/stack/Dockerfile --build-arg STACK=node --tag kossnocorp/dev-node:amd64 --push .
+  docker buildx build --builder cloud-kossnocorp-mothership --platform linux/arm64 --file images/stack/Dockerfile --build-arg STACK=node --tag kossnocorp/dev-node:arm64 --push .
 
 publish-node: build-node
-  docker buildx imagetools create --tag kossnocorp/dev-node:latest kossnocorp/dev-node:next
+  docker buildx imagetools create --tag kossnocorp/dev-node:latest kossnocorp/dev-node:amd64 kossnocorp/dev-node:arm64
 
 # Rust
 
@@ -35,12 +33,11 @@ up-rust:
   devcontainer up --workspace-folder workspaces/rust
 
 build-rust:
-  docker buildx build --builder cloud-kossnocorp-mothership --platform linux/amd64 --file images/stack/Dockerfile --build-arg STACK=rust --tag kossnocorp/dev-rust:amd64 .
-  docker buildx build --builder cloud-kossnocorp-mothership --platform linux/arm64 --file images/stack/Dockerfile --build-arg STACK=rust --tag kossnocorp/dev-rust:arm64 .
-  docker buildx imagetools create --tag kossnocorp/dev-rust:next kossnocorp/dev-rust:amd64 kossnocorp/dev-rust:arm64
+  docker buildx build --builder cloud-kossnocorp-mothership --platform linux/amd64 --file images/stack/Dockerfile --build-arg STACK=rust --tag kossnocorp/dev-rust:amd64 --push .
+  docker buildx build --builder cloud-kossnocorp-mothership --platform linux/arm64 --file images/stack/Dockerfile --build-arg STACK=rust --tag kossnocorp/dev-rust:arm64 --push .
 
 publish-rust: build-rust
-  docker buildx imagetools create --tag kossnocorp/dev-rust:latest kossnocorp/dev-rust:next
+  docker buildx imagetools create --tag kossnocorp/dev-rust:latest kossnocorp/dev-rust:amd64 kossnocorp/dev-rust:arm64
 
 # esp-rs
 
