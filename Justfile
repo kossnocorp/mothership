@@ -1,8 +1,8 @@
 # All
 
-build-all: build-base build-node build-rust
+build-all: build-base build-node build-rust build-go
 
-publish-all: publish-base publish-node publish-rust
+publish-all: publish-base publish-node publish-rust publish-go
 
 # Base
 
@@ -38,6 +38,15 @@ build-rust:
 
 publish-rust: build-rust
   docker buildx imagetools create --tag kossnocorp/dev-rust:latest kossnocorp/dev-rust:amd64 kossnocorp/dev-rust:arm64
+
+# Go
+
+build-go:
+  docker buildx build --builder cloud-kossnocorp-mothership --platform linux/amd64 --file images/stack/Dockerfile --build-arg STACK=go --tag kossnocorp/dev-go:amd64 --push .
+  docker buildx build --builder cloud-kossnocorp-mothership --platform linux/arm64 --file images/stack/Dockerfile --build-arg STACK=go --tag kossnocorp/dev-go:arm64 --push .
+
+publish-go: build-go
+  docker buildx imagetools create --tag kossnocorp/dev-go:latest kossnocorp/dev-go:amd64 kossnocorp/dev-go:arm64
 
 # esp-rs
 

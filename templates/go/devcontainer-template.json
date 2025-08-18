@@ -1,0 +1,15 @@
+{
+  "id": "go",
+  "version": "0.1.0",
+  "name": "node",
+  "description": "Go development environment",
+  "publisher": "Sasha Koss <koss@nocorp.me>",
+  "platforms": ["Go"],
+  "optionalPaths": [],
+  "options": {
+    "name": {
+      "type": "string",
+      "description": "Name of the dev container"
+    }
+  }
+}
