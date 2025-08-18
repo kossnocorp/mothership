@@ -186,6 +186,14 @@ ansible-playbook $playbooks/mise.yaml --inventory=$inventory
 echo "🚧 Setting up NeoVim..."
 ansible-playbook $playbooks/neovim.yaml --inventory=$inventory
 
+# Install age
+echo "🚧 Setting up age..."
+ansible-playbook $playbooks/age.yaml --inventory=$inventory
+
+# Install SOPS
+echo "🚧 Setting up SOPS..."
+ansible-playbook $playbooks/sops.yaml --inventory=$inventory
+
 # Clear ANSIBLE_BECOME_PASS to prevent leaks
 ANSIBLE_BECOME_PASS=""
 

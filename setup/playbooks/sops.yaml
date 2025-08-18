@@ -1,0 +1,144 @@
+---
+- name: Install SOPS
+  hosts: localhost
+  connection: local
+  vars:
+    sops_version: "3.10.2"
+    sops_install_dir: "{{ ansible_env.HOME }}/.local/bin"
+    sops_arch_map:
+      x86_64: amd64
+      aarch64: arm64
+      armv7l: armv7
+    sops_os: "{{ ansible_system | lower }}"
+    sops_arch: "{{ sops_arch_map[ansible_architecture] | default(ansible_architecture) }}"
+    sops_binary_name: "sops-v{{ sops_version }}.{{ sops_os }}.{{ sops_arch }}"
+    sops_download_url: "https://github.com/getsops/sops/releases/download/v{{ sops_version }}/{{ sops_binary_name }}"
+    sops_checksums_url: "https://github.com/getsops/sops/releases/download/v{{ sops_version }}/sops-v{{ sops_version }}.checksums.txt"
+    sops_checksums_pem_url: "https://github.com/getsops/sops/releases/download/v{{ sops_version }}/sops-v{{ sops_version }}.checksums.pem"
+    sops_checksums_sig_url: "https://github.com/getsops/sops/releases/download/v{{ sops_version }}/sops-v{{ sops_version }}.checksums.sig"
+
+  tasks:
+    - name: Set up ~/.local/bin in PATH
+      include_tasks: "{{ playbook_dir }}/local-bin-tasks.yaml"
+
+    - name: Check if SOPS is installed and get version
+      ansible.builtin.command:
+        cmd: "{{ sops_install_dir }}/sops --version"
+      register: sops_current_version
+      changed_when: false
+      failed_when: false
+
+    - name: Parse current SOPS version
+      ansible.builtin.set_fact:
+        current_version: "{{ sops_current_version.stdout | regex_search('sops ([0-9.]+)', '\\1') | first | default('not installed') }}"
+      when: sops_current_version.rc == 0
+
+    - name: Set current version to 'not installed' if SOPS is not found
+      ansible.builtin.set_fact:
+        current_version: "not installed"
+      when: sops_current_version.rc != 0
+
+    - name: Display current and target versions
+      ansible.builtin.debug:
+        msg:
+          - "Current SOPS version: {{ current_version }}"
+          - "Target SOPS version: {{ sops_version }}"
+
+    - name: Install or update SOPS if needed
+      when: current_version != sops_version
+      block:
+        - name: Create temporary directory for SOPS download
+          ansible.builtin.tempfile:
+            state: directory
+            suffix: sops
+          register: sops_temp_dir
+
+        - name: Check if cosign is available
+          ansible.builtin.command:
+            cmd: which cosign
+          register: cosign_check
+          changed_when: false
+          failed_when: false
+
+        - name: Download SOPS checksums file
+          ansible.builtin.get_url:
+            url: "{{ sops_checksums_url }}"
+            dest: "{{ sops_temp_dir.path }}/sops-v{{ sops_version }}.checksums.txt"
+            mode: "0644"
+
+        - name: Download and verify checksums signature (if cosign available)
+          when: cosign_check.rc == 0
+          block:
+            - name: Download checksums certificate
+              ansible.builtin.get_url:
+                url: "{{ sops_checksums_pem_url }}"
+                dest: "{{ sops_temp_dir.path }}/sops-v{{ sops_version }}.checksums.pem"
+                mode: "0644"
+
+            - name: Download checksums signature
+              ansible.builtin.get_url:
+                url: "{{ sops_checksums_sig_url }}"
+                dest: "{{ sops_temp_dir.path }}/sops-v{{ sops_version }}.checksums.sig"
+                mode: "0644"
+
+            - name: Verify checksums file signature with cosign
+              ansible.builtin.command:
+                cmd: |
+                  cosign verify-blob sops-v{{ sops_version }}.checksums.txt \
+                    --certificate sops-v{{ sops_version }}.checksums.pem \
+                    --signature sops-v{{ sops_version }}.checksums.sig \
+                    --certificate-identity-regexp=https://github.com/getsops \
+                    --certificate-oidc-issuer=https://token.actions.githubusercontent.com
+                chdir: "{{ sops_temp_dir.path }}"
+              register: cosign_verify
+              changed_when: false
+
+        - name: Warn if cosign is not available
+          ansible.builtin.debug:
+            msg: "WARNING: cosign not found, skipping signature verification. Consider installing cosign for enhanced security."
+          when: cosign_check.rc != 0
+
+        - name: Download SOPS binary to temp location
+          ansible.builtin.get_url:
+            url: "{{ sops_download_url }}"
+            dest: "{{ sops_temp_dir.path }}/{{ sops_binary_name }}"
+            mode: "0755"
+
+        - name: Verify binary integrity using checksums file
+          ansible.builtin.command:
+            cmd: sha256sum -c sops-v{{ sops_version }}.checksums.txt --ignore-missing
+            chdir: "{{ sops_temp_dir.path }}"
+          register: checksum_verify
+          changed_when: false
+
+        - name: Move verified binary to final location
+          ansible.builtin.copy:
+            src: "{{ sops_temp_dir.path }}/{{ sops_binary_name }}"
+            dest: "{{ sops_install_dir }}/sops"
+            mode: "0755"
+            remote_src: true
+
+        - name: Verify SOPS installation
+          ansible.builtin.command:
+            cmd: "{{ sops_install_dir }}/sops --version"
+          register: sops_verify
+          changed_when: false
+
+        - name: Confirm installation version
+          ansible.builtin.assert:
+            that:
+              - sops_verify.rc == 0
+              - "'sops ' + sops_version in sops_verify.stdout"
+            fail_msg: "SOPS installation failed or version mismatch"
+            success_msg: "SOPS v{{ sops_version }} successfully installed"
+
+        - name: Clean up temporary directory
+          ansible.builtin.file:
+            path: "{{ sops_temp_dir.path }}"
+            state: absent
+          when: sops_temp_dir.path is defined
+
+    - name: SOPS is already up to date
+      ansible.builtin.debug:
+        msg: "SOPS v{{ sops_version }} is already installed"
+      when: current_version == sops_version
