@@ -1,8 +1,8 @@
 # All
 
-build-all: build-base build-node build-rust build-go
+build-all: build-base build-node build-rust build-go build-polyglot
 
-publish-all: publish-base publish-node publish-rust publish-go
+publish-all: publish-base publish-node publish-rust publish-go publish-polyglot
 
 # Base
 
@@ -47,6 +47,15 @@ build-go:
 
 publish-go: build-go
   docker buildx imagetools create --tag kossnocorp/dev-go:latest kossnocorp/dev-go:amd64 kossnocorp/dev-go:arm64
+
+# Polyglot
+
+build-polyglot:
+  docker buildx build --builder cloud-kossnocorp-mothership --platform linux/amd64 --file images/stack/Dockerfile --build-arg STACK=polyglot --tag kossnocorp/dev-polyglot:amd64 --push .
+  docker buildx build --builder cloud-kossnocorp-mothership --platform linux/arm64 --file images/stack/Dockerfile --build-arg STACK=polyglot --tag kossnocorp/dev-polyglot:arm64 --push .
+
+publish-polyglot: build-polyglot
+  docker buildx imagetools create --tag kossnocorp/dev-polyglot:latest kossnocorp/dev-polyglot:amd64 kossnocorp/dev-polyglot:arm64
 
 # esp-rs
 

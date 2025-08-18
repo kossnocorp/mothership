@@ -9,7 +9,13 @@ The quickest way to start with a dev container, is to use one of the Mothership 
 For example, to set up a dev container in a Node.js project, run:
 
 ```bash
-devcontainer templates apply -t ghcr.io/kossnocorp/templates/node -a '{"name":"MY_PROJECT_NAME"}'
+npx @devcontainers/cli templates apply -t ghcr.io/kossnocorp/templates/node -a '{"name":"MY_PROJECT_NAME"}'
+```
+
+Or if you have installed [`@devcontainers/cli`](https://github.com/devcontainers/cli):
+
+```bash
+devcontainers-cli templates apply -t ghcr.io/kossnocorp/templates/node -a '{"name":"MY_PROJECT_NAME"}'
 ```
 
 ## Contributing
@@ -30,7 +36,7 @@ docker run -it --rm kossnocorp/dev-node:next bash
 
 ...
 
-Right after publishing, the template package will be private, so to make it available to everyone, make sure to remind [@kossnocorp](https://github.com/kossnocorp) to visit [the packages at GitHub](https://github.com/kossnocorp?tab=packages) and set the new package visibility it to public.
+Right after publishing, the template package will be private, so to make it available to everyone, make sure to remind [@kossnocorp](https://github.com/kossnocorp) to visit [the packages at GitHub](https://github.com/kossnocorp?tab=packages) and set the new package visibility to public.
 
 #### Docs
 
@@ -43,13 +49,13 @@ See relevant documentation:
 
 ### Setting Up
 
-To speed up image building, we use Docker Build Cloud, to begin, create a local instance of the cloud builder on your machine:
+To speed up image building, we use Docker Build Cloud. To begin, create a local instance of the cloud builder on your machine:
 
 ```bash
 docker buildx create --driver cloud kossnocorp/mothership
 ```
 
-To build an image, add `--builder cloud-kossnocorp-mothership` flag to the `docker buildx build` command, e.g.,:
+To build an image, add the `--builder cloud-kossnocorp-mothership` flag to the `docker buildx build` command, e.g.,:
 
 ```bash
 docker buildx build --builder cloud-kossnocorp-mothership --platform linux/amd64 --file images/base/Dockerfile --tag kossnocorp/dev-base .

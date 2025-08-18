@@ -1,10 +1,10 @@
 {
-  "id": "rust",
-  "version": "0.6.0",
-  "name": "rust",
-  "description": "Rust development environment",
+  "id": "polyglot",
+  "version": "0.1.0",
+  "name": "polyglot",
+  "description": "Polyglot development environment",
   "publisher": "Sasha Koss <koss@nocorp.me>",
-  "platforms": ["Rust"],
+  "platforms": ["Rust", "Node.js", "Go"],
   "optionalPaths": [],
   "options": {
     "name": {

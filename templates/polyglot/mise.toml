@@ -1,0 +1,11 @@
+[tools]
+## Stack
+rust = "latest"
+node = { version = "lts", postinstall = "corepack enable" }
+go = "latest"
+
+[settings]
+# Enable extra features
+experimental = true
+# Consume stack version from .tool-versions, .nvmrc, .go-version, etc.
+idiomatic_version_file_enable_tools = ["rust", "node", "go"]
