@@ -55,6 +55,14 @@ RUN ansible-playbook "/tmp/age.yaml" --inventory="$INVENTORY"
 COPY "$PLAYBOOKS/sops.yaml" "/tmp/sops.yaml"
 RUN ansible-playbook "/tmp/sops.yaml" --inventory="$INVENTORY"
 
+# Install 1Password CLI
+COPY "$PLAYBOOKS/1password-cli.yaml" "/tmp/1password-cli.yaml"
+RUN ansible-playbook "/tmp/1password-cli.yaml" --inventory="$INVENTORY"
+
+# Install age-op
+COPY "$PLAYBOOKS/age-op.yaml" "/tmp/age-op.yaml"
+RUN ansible-playbook "/tmp/age-op.yaml" --inventory="$INVENTORY"
+
 # Install stack & tools
 COPY ./setup/configs/base/mise.toml "$HOME/.config/mise/mise.toml"
 COPY ./setup/scripts/mise-config.sh /tmp/mise-config.sh

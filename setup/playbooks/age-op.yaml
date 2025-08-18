@@ -1,0 +1,92 @@
+---
+- name: Install age-op
+  hosts: localhost
+  connection: local
+  vars:
+    age_op_commit: "608077a20f6c3b84f1d174f381fea34db53ccd4c"
+    age_op_install_dir: "{{ ansible_env.HOME }}/.local/bin"
+    age_op_download_url: "https://raw.githubusercontent.com/stevelr/age-op/{{ age_op_commit }}/age-op"
+
+  tasks:
+    - name: Set up ~/.local/bin in PATH
+      include_tasks: "{{ playbook_dir }}/local-bin-tasks.yaml"
+
+    - name: Check if age-op exists
+      ansible.builtin.stat:
+        path: "{{ age_op_install_dir }}/age-op"
+      register: age_op_stat
+
+    - name: Check if age-op has correct version
+      ansible.builtin.lineinfile:
+        path: "{{ age_op_install_dir }}/age-op"
+        line: "# age-op version: {{ age_op_commit }}"
+        state: present
+      check_mode: yes
+      register: age_op_version_check
+      failed_when: false
+      changed_when: false
+      when: age_op_stat.stat.exists
+
+    - name: Set update needed flag
+      ansible.builtin.set_fact:
+        needs_update: "{{ not age_op_stat.stat.exists or (age_op_stat.stat.exists and age_op_version_check.changed) }}"
+
+    - name: Install or update age-op if needed
+      when: needs_update
+      block:
+        - name: Create temporary directory for age-op download
+          ansible.builtin.tempfile:
+            state: directory
+            suffix: age-op
+          register: age_op_temp_dir
+
+        - name: Download age-op script
+          ansible.builtin.get_url:
+            url: "{{ age_op_download_url }}"
+            dest: "{{ age_op_temp_dir.path }}/age-op"
+            mode: "0755"
+
+        - name: Verify age-op script contains expected content
+          ansible.builtin.lineinfile:
+            path: "{{ age_op_temp_dir.path }}/age-op"
+            line: "#!/usr/bin/env bash"
+            state: present
+          check_mode: yes
+          register: age_op_verify
+          changed_when: false
+          failed_when: age_op_verify.changed
+
+        - name: Append commit ID to age-op script
+          ansible.builtin.lineinfile:
+            path: "{{ age_op_temp_dir.path }}/age-op"
+            line: "# age-op version: {{ age_op_commit }}"
+            insertafter: EOF
+
+        - name: Move age-op to ~/.local/bin
+          ansible.builtin.copy:
+            src: "{{ age_op_temp_dir.path }}/age-op"
+            dest: "{{ age_op_install_dir }}/age-op"
+            mode: "0755"
+            remote_src: true
+
+        - name: Verify age-op installation
+          ansible.builtin.command:
+            cmd: "{{ age_op_install_dir }}/age-op --help"
+          register: age_op_verify
+          changed_when: false
+          failed_when: age_op_verify.rc != 0 and age_op_verify.rc != 1
+
+        - name: Clean up temporary directory
+          ansible.builtin.file:
+            path: "{{ age_op_temp_dir.path }}"
+            state: absent
+          when: age_op_temp_dir.path is defined
+
+        - name: Display installation success
+          ansible.builtin.debug:
+            msg: "age-op (commit {{ age_op_commit[:8] }}) successfully installed"
+
+    - name: age-op is already installed
+      ansible.builtin.debug:
+        msg: "age-op (commit {{ age_op_commit[:8] }}) is already installed"
+      when: not needs_update

@@ -193,6 +193,14 @@ ansible-playbook $playbooks/age.yaml --inventory=$inventory
 echo "🚧 Setting up SOPS..."
 ansible-playbook $playbooks/sops.yaml --inventory=$inventory
 
+# Install 1Password CLI
+echo "🚧 Setting up 1Password CLI..."
+ansible-playbook $playbooks/1password-cli.yaml --inventory=$inventory
+
+# Install age-op
+echo "🚧 Setting up age-op..."
+ansible-playbook $playbooks/age-op.yaml --inventory=$inventory
+
 # Clear ANSIBLE_BECOME_PASS to prevent leaks
 ANSIBLE_BECOME_PASS=""
 
