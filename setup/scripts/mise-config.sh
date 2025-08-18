@@ -18,4 +18,5 @@ sudo chown "$USER:$USER" "$mise_config"
 # Install stack & tools
 PATH="$HOME/.local/bin:$PATH"
 eval "$(mise activate bash --shims)"
+mise trust
 mise install

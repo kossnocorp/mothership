@@ -46,3 +46,11 @@ RUN ansible-playbook "$PLAYBOOKS/mise.yaml" --inventory="$INVENTORY"
 # Install Neovim
 COPY "$PLAYBOOKS/neovim.yaml" "$PLAYBOOKS/neovim.yaml"
 RUN ansible-playbook "$PLAYBOOKS/neovim.yaml" --inventory="$INVENTORY"
+
+# Install age
+COPY "$PLAYBOOKS/age.yaml" "$PLAYBOOKS/age.yaml"
+RUN ansible-playbook "$PLAYBOOKS/age.yaml" --inventory="$INVENTORY"
+
+# Install SOPS
+COPY "$PLAYBOOKS/sops.yaml" "$PLAYBOOKS/sops.yaml"
+RUN ansible-playbook "$PLAYBOOKS/sops.yaml" --inventory="$INVENTORY"
