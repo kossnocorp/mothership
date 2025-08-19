@@ -1,6 +1,6 @@
 {
   "id": "go",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "name": "node",
   "description": "Go development environment",
   "publisher": "Sasha Koss <koss@nocorp.me>",
