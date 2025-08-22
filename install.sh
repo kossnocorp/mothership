@@ -201,6 +201,10 @@ ansible-playbook $playbooks/1password-cli.yaml --inventory=$inventory
 echo "🚧 Setting up age-op..."
 ansible-playbook $playbooks/age-op.yaml --inventory=$inventory
 
+# Install op-agent
+echo "🚧 Setting up op-agent..."
+ansible-playbook $playbooks/op-agent.yaml --inventory=$inventory
+
 # Clear ANSIBLE_BECOME_PASS to prevent leaks
 ANSIBLE_BECOME_PASS=""
 

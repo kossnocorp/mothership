@@ -63,6 +63,10 @@ RUN ansible-playbook "/tmp/1password-cli.yaml" --inventory="$INVENTORY"
 COPY "$PLAYBOOKS/age-op.yaml" "/tmp/age-op.yaml"
 RUN ansible-playbook "/tmp/age-op.yaml" --inventory="$INVENTORY"
 
+# Install op-agent
+COPY "$PLAYBOOKS/op-agent.yaml" "/tmp/op-agent.yaml"
+RUN ansible-playbook "/tmp/op-agent.yaml" --inventory="$INVENTORY"
+
 # Install stack & tools
 COPY ./setup/configs/base/mise.toml "$HOME/.config/mise/mise.toml"
 COPY ./setup/scripts/mise-config.sh /tmp/mise-config.sh

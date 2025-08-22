@@ -1,0 +1,161 @@
+---
+- name: Install op-agent and op-agent-client
+  hosts: localhost
+  connection: local
+  vars:
+    op_agent_version: "0.2.1"
+    op_agent_install_dir: "{{ ansible_env.HOME }}/.local/bin"
+    op_agent_arch_map:
+      x86_64: amd64
+      aarch64: arm64
+      armv7l: armv7
+    op_agent_os: "{{ ansible_system | lower }}"
+    op_agent_arch: "{{ op_agent_arch_map[ansible_architecture] | default(ansible_architecture) }}"
+    op_agent_binary_name: "op-agent-{{ op_agent_version }}-{{ op_agent_os }}-{{ op_agent_arch }}"
+    op_agent_client_binary_name: "op-agent-client-{{ op_agent_version }}-{{ op_agent_os }}-{{ op_agent_arch }}"
+    op_agent_download_url: "https://github.com/kossnocorp/op-agent/releases/download/v{{ op_agent_version }}/{{ op_agent_binary_name }}"
+    op_agent_client_download_url: "https://github.com/kossnocorp/op-agent/releases/download/v{{ op_agent_version }}/{{ op_agent_client_binary_name }}"
+    op_agent_checksums_url: "https://github.com/kossnocorp/op-agent/releases/download/v{{ op_agent_version }}/checksums.txt"
+
+  tasks:
+    - name: Set up ~/.local/bin in PATH
+      include_tasks: "{{ playbook_dir }}/local-bin-tasks.yaml"
+
+    - name: Check if op-agent is installed and get version
+      ansible.builtin.command:
+        cmd: "{{ op_agent_install_dir }}/op-agent --version"
+      register: op_agent_current_version
+      changed_when: false
+      failed_when: false
+
+    - name: Parse current op-agent version
+      ansible.builtin.set_fact:
+        current_version: "{{ op_agent_current_version.stdout | trim }}"
+      when: op_agent_current_version.rc == 0
+
+    - name: Set current version to 'not installed' if op-agent is not found
+      ansible.builtin.set_fact:
+        current_version: "not installed"
+      when: op_agent_current_version.rc != 0
+
+    - name: Display current and target versions
+      ansible.builtin.debug:
+        msg:
+          - "Current op-agent version: {{ current_version }}"
+          - "Target op-agent version: {{ op_agent_version }}"
+
+    - name: Install or update op-agent and op-agent-client if needed
+      when: current_version != op_agent_version
+      block:
+        - name: Create temporary directory for op-agent download
+          ansible.builtin.tempfile:
+            state: directory
+            suffix: op-agent
+          register: op_agent_temp_dir
+
+        - name: Download op-agent checksums file
+          ansible.builtin.get_url:
+            url: "{{ op_agent_checksums_url }}"
+            dest: "{{ op_agent_temp_dir.path }}/checksums.txt"
+            mode: "0644"
+
+        - name: Download op-agent binary to temp location
+          ansible.builtin.get_url:
+            url: "{{ op_agent_download_url }}"
+            dest: "{{ op_agent_temp_dir.path }}/{{ op_agent_binary_name }}"
+            mode: "0755"
+
+        - name: Download op-agent-client binary to temp location
+          ansible.builtin.get_url:
+            url: "{{ op_agent_client_download_url }}"
+            dest: "{{ op_agent_temp_dir.path }}/{{ op_agent_client_binary_name }}"
+            mode: "0755"
+
+        - name: Extract expected checksum for op-agent
+          ansible.builtin.shell:
+            cmd: grep "{{ op_agent_binary_name }}" checksums.txt | awk '{print $1}'
+            chdir: "{{ op_agent_temp_dir.path }}"
+          register: expected_checksum_agent
+          changed_when: false
+
+        - name: Calculate actual checksum of downloaded op-agent binary
+          ansible.builtin.shell:
+            cmd: sha256sum "{{ op_agent_binary_name }}" | awk '{print $1}'
+            chdir: "{{ op_agent_temp_dir.path }}"
+          register: actual_checksum_agent
+          changed_when: false
+
+        - name: Verify op-agent binary checksum
+          ansible.builtin.assert:
+            that:
+              - expected_checksum_agent.stdout == actual_checksum_agent.stdout
+            fail_msg: "Checksum verification failed for op-agent binary"
+            success_msg: "Checksum verification passed for op-agent"
+
+        - name: Extract expected checksum for op-agent-client
+          ansible.builtin.shell:
+            cmd: grep "{{ op_agent_client_binary_name }}" checksums.txt | awk '{print $1}'
+            chdir: "{{ op_agent_temp_dir.path }}"
+          register: expected_checksum_client
+          changed_when: false
+
+        - name: Calculate actual checksum of downloaded op-agent-client binary
+          ansible.builtin.shell:
+            cmd: sha256sum "{{ op_agent_client_binary_name }}" | awk '{print $1}'
+            chdir: "{{ op_agent_temp_dir.path }}"
+          register: actual_checksum_client
+          changed_when: false
+
+        - name: Verify op-agent-client binary checksum
+          ansible.builtin.assert:
+            that:
+              - expected_checksum_client.stdout == actual_checksum_client.stdout
+            fail_msg: "Checksum verification failed for op-agent-client binary"
+            success_msg: "Checksum verification passed for op-agent-client"
+
+        - name: Move verified op-agent binary to final location
+          ansible.builtin.copy:
+            src: "{{ op_agent_temp_dir.path }}/{{ op_agent_binary_name }}"
+            dest: "{{ op_agent_install_dir }}/op-agent"
+            mode: "0755"
+            remote_src: true
+
+        - name: Move verified op-agent-client binary to final location
+          ansible.builtin.copy:
+            src: "{{ op_agent_temp_dir.path }}/{{ op_agent_client_binary_name }}"
+            dest: "{{ op_agent_install_dir }}/op-agent-client"
+            mode: "0755"
+            remote_src: true
+
+        - name: Verify op-agent installation
+          ansible.builtin.command:
+            cmd: "{{ op_agent_install_dir }}/op-agent --version"
+          register: op_agent_verify
+          changed_when: false
+
+        - name: Verify op-agent-client installation
+          ansible.builtin.command:
+            cmd: "{{ op_agent_install_dir }}/op-agent-client --version"
+          register: op_agent_client_verify
+          changed_when: false
+
+        - name: Confirm installation versions
+          ansible.builtin.assert:
+            that:
+              - op_agent_verify.rc == 0
+              - op_agent_client_verify.rc == 0
+              - op_agent_verify.stdout | trim == op_agent_version
+              - op_agent_client_verify.stdout | trim == op_agent_version
+            fail_msg: "op-agent or op-agent-client installation failed or version mismatch"
+            success_msg: "op-agent and op-agent-client v{{ op_agent_version }} successfully installed"
+
+        - name: Clean up temporary directory
+          ansible.builtin.file:
+            path: "{{ op_agent_temp_dir.path }}"
+            state: absent
+          when: op_agent_temp_dir.path is defined
+
+    - name: op-agent and op-agent-client are already up to date
+      ansible.builtin.debug:
+        msg: "op-agent and op-agent-client v{{ op_agent_version }} are already installed"
+      when: current_version == op_agent_version
