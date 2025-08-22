@@ -1,6 +1,6 @@
 {
   "id": "node",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "name": "node",
   "description": "Node.js development environment",
   "publisher": "Sasha Koss <koss@nocorp.me>",

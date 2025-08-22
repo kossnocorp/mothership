@@ -5,11 +5,15 @@
 set -e
 
 # Pull git submodules
-git submodule update --recursive --init --remote
+if [ -d .git ]; then
+  git submodule update --recursive --init --remote
+fi
 
 # Trust all mise configs
 mise trust --yes --all
-git submodule foreach --recursive "mise trust"
+if [ -d .git ]; then
+  git submodule foreach --recursive "mise trust"
+fi
 
 # Update mise
 mise self-update -y
@@ -20,8 +24,8 @@ mise install
 # Install dependencies
 if [ -f ./pnpm-lock.yaml ]; then
   yes | pnpm install
-else if [ -f ./yarn.lock ]; then
+elif [ -f ./yarn.lock ]; then
   yes | yarn install
-else if [ -f ./package-lock.json ]; then
+elif [ -f ./package-lock.json ]; then
   yes | npm install
 fi
