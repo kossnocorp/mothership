@@ -17,6 +17,8 @@ fd = "latest"
 bat = "latest"
 # Better ls
 "cargo:exa" = "latest"
+# Oxidized jq
+"cargo:jaq" = "latest"
 
 [settings]
 # Enable extra features
