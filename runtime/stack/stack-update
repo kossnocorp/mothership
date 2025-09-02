@@ -1,0 +1,35 @@
+#! /usr/bin/env bash
+
+# This script updates the stack to the latest version. It allows skip rebuilding
+# dev containers from scratch and simply use the latest `mise.toml` file.
+
+set -e
+
+echo "⚡️ Updating stack..."
+
+config_path="$HOME/.config"
+
+stack_file="$(cat "$config_path/mothership/stack" 2>/dev/null || echo "")"
+stack="${STACK:-$stack_file}"
+
+if [ -z "$stack" ]; then
+  echo -e "\n🔴 Stack is not configured. Set STACK or create ~/.config/mothership/stack with the stack id (rust, node, etc.)"
+  exit 1
+fi
+
+echo -e "\n🔵 Identified stack as $stack"
+
+echo -e "\n┌─ 🌀 Updating global mise.toml...\n"
+
+mise_config_path="$config_path/mise"
+mkdir -p "$mise_config_path"
+curl "https://raw.githubusercontent.com/kossnocorp/mothership/refs/heads/main/setup/configs/$stack/mise.toml" > \
+  "$mise_config_path/mise.toml"
+
+echo -e "\n└─"
+
+echo -e "┌─ 🌀 Installing stack...\n"
+mise install
+echo -e "\n└─"
+
+echo -e "\n⭐️ Installation complete!"

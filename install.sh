@@ -5,9 +5,7 @@
 
 set -e
 
-echo "⭐️ Installation complete!"
-
-printf "⚡️ Setting up development environment...\n\n"
+echo -e "⚡️ Setting up development environment...\n"
 
 #region Prepare
 
