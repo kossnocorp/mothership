@@ -21,6 +21,8 @@ bat = "latest"
 "cargo:exa" = "latest"
 # Oxidized jq
 "cargo:jaq" = "latest"
+# CSV processor CLI
+"cargo:xsv" = "latest"
 
 [settings]
 # Enable extra features
