@@ -1,0 +1,32 @@
+---
+- name: Install shfmt
+  hosts: localhost
+  connection: local
+
+  tasks:
+    - name: Debian/Ubuntu set up
+      when: ansible_os_family == "Debian"
+      become: yes
+      block:
+        - name: Update apt cache
+          apt:
+            update_cache: yes
+            cache_valid_time: 3600
+
+        - name: Install shfmt
+          apt:
+            name: shfmt
+            state: present
+
+    - name: macOS set up
+      when: ansible_system == "Darwin"
+      block:
+        - name: Update Homebrew
+          homebrew:
+            update_homebrew: true
+
+        - name: Install shfmt
+          homebrew:
+            name: shfmt
+            state: present
+

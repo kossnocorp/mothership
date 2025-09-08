@@ -25,7 +25,8 @@
         "hverlin.mise-vscode",
         "tekumara.typos-vscode",
         "davidlday.languagetool-linter",
-        "tintinweb.vscode-inline-bookmarks"
+        "tintinweb.vscode-inline-bookmarks",
+        "mkhl.shfmt"
       ],
       "settings": {
         "terminal.integrated.defaultProfile.linux": "fish",

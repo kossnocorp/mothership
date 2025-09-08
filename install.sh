@@ -183,6 +183,10 @@ ansible-playbook $playbooks/mise.yaml --inventory=$inventory
 echo "🚧 Setting up NeoVim..."
 ansible-playbook $playbooks/neovim.yaml --inventory=$inventory
 
+# Install shfmt
+echo "🚧 Setting up shfmt..."
+ansible-playbook $playbooks/shfmt.yaml --inventory=$inventory
+
 # Install age
 echo "🚧 Setting up age..."
 ansible-playbook $playbooks/age.yaml --inventory=$inventory

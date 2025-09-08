@@ -47,6 +47,10 @@ RUN ansible-playbook "$PLAYBOOKS/mise.yaml" --inventory="$INVENTORY"
 COPY "$PLAYBOOKS/neovim.yaml" "$PLAYBOOKS/neovim.yaml"
 RUN ansible-playbook "$PLAYBOOKS/neovim.yaml" --inventory="$INVENTORY"
 
+# Install shfmt
+COPY "$PLAYBOOKS/shfmt.yaml" "$PLAYBOOKS/shfmt.yaml"
+RUN ansible-playbook "$PLAYBOOKS/shfmt.yaml" --inventory="$INVENTORY"
+
 # Install age
 COPY "$PLAYBOOKS/age.yaml" "$PLAYBOOKS/age.yaml"
 RUN ansible-playbook "$PLAYBOOKS/age.yaml" --inventory="$INVENTORY"
