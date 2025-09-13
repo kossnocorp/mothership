@@ -1,33 +1,24 @@
 # Global Rust mise config
 
 [tools]
-## Stack
+# Stack
 rust = "latest"
 
-## Tools
-# Usage command
-usage = "latest"
-# Install Rust-based binaries instead of compiling
-cargo-binstall = "latest"
-# Better make
-just = "latest"
-# Better grep
-ripgrep = "latest"
-# Better find
-fd = "latest"
-# Better cat
-bat = "latest"
-# Better ls
-"cargo:exa" = "latest"
-# Oxidized jq
-"cargo:jaq" = "latest"
-# CSV processor CLI
-"cargo:xsv" = "latest"
+# Tools
+usage = "latest"                                         # Usage command
+cargo-binstall = "latest"                                # Install Rust binaries from GitHub releases
+just = "latest"                                          # Better make
+ripgrep = "latest"                                       # Better grep
+fd = "latest"                                            # Better find
+bat = "latest"                                           # Better cat
+"watchexec" = "latest"                                   # Watch fs changes and run commands
+"cargo:exa" = "latest"                                   # Better ls
+"cargo:jaq" = "latest"                                   # Oxidized jq
+"cargo:xsv" = "latest"                                   # CSV processor CLI
+"cargo:https://github.com/tekumara/typos-lsp" = "latest" # LSP server for typos
+
 
 [settings]
-# Enable extra features
-experimental = true
-# Enable cargo binstall
-cargo.binstall = true
-# Use rust-toolchain.toml
-idiomatic_version_file_enable_tools = ["rust"]
+experimental = true                            # Enable extra features
+cargo.binstall = true                          # Enable cargo binstall
+idiomatic_version_file_enable_tools = ["rust"] # Use rust-toolchain.toml
