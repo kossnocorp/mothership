@@ -1,10 +1,32 @@
 # Mothership
 
+Quick and easy setup for comfortable and secure development.
+
 🚧 Work in progress, **follow for updates on [Twitter](https://twitter.com/kossnocorp) or [Bluesky](https://bsky.app/profile/koss.nocorp.me)**
+
+Mothership is a toolkit for setting up and maintaining reproducible development environments. It values developer experience, productivity, security and performance.
+
+It is an omakase that comes with a curated library of tools yet is based on vanilla tech, saving you from tedious maintenance.
+
+Behind the scenes it is just boring Ubuntu, Docker, Ansible, and a bunch of shell scripts providing a comfortable developer experience.
+
+It works both on your local machine and in a dev container, so you can have a consistent experience wherever you go. It works on Linux, macOS, and WSL.
+
+## Piqued your interest?
+
+There's two main ways to apply Mothership:
+
+1. Use a [dev container](#dev-container) template to set up a project environment in a container.
+
+2. Run [install.sh](#installsh) to set up your local machine.
 
 ## Dev Container
 
 The quickest way to start with a dev container, is to use one of the Mothership templates.
+
+### Dev Container CLI
+
+You can use the [`@devcontainers/cli`](https://github.com/devcontainers/cli) to apply a template to your project.
 
 For example, to set up a dev container in a Node.js project, run:
 
@@ -17,6 +39,10 @@ Or if you have installed [`@devcontainers/cli`](https://github.com/devcontainers
 ```bash
 devcontainers-cli templates apply -t ghcr.io/kossnocorp/templates/node -a '{"name":"MY_PROJECT_NAME"}'
 ```
+
+## `install.sh`
+
+TODO: Write instructions for using `install.sh` to set up a local machine.
 
 ## Contributing
 
