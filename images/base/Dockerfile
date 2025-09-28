@@ -72,3 +72,7 @@ COPY ./setup/configs/base/mise.toml "$HOME/.config/mise/mise.toml"
 COPY ./setup/scripts/mise-config.sh /tmp/mise-config.sh
 RUN sudo chmod +x /tmp/mise-config.sh \
   && /tmp/mise-config.sh
+
+# Prepare workspace directory
+
+RUN sudo mkdir /wrkspc && sudo chown "$USER" /wrkspc
