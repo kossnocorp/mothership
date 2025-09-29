@@ -9,8 +9,8 @@ echo "⚡️ Updating stack..."
 
 config_path="$HOME/.config"
 
-stack_file="$(cat "$config_path/mothership/stack" 2>/dev/null || echo "")"
-stack="${STACK:-$stack_file}"
+stack_file_content="$(cat "$config_path/mothership/stack" 2>/dev/null || echo "")"
+stack="${STACK:-$stack_file_content}"
 
 if [ -z "$stack" ]; then
   echo -e "\n🔴 Stack is not configured. Set STACK or create ~/.config/mothership/stack with the stack id (rust, node, etc.)"
