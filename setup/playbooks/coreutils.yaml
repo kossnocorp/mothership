@@ -1,0 +1,17 @@
+---
+- name: Set up CoreUtils
+  hosts: localhost
+  connection: local
+
+  tasks:
+    - name: macOS set up
+      when: ansible_system == "Darwin"
+      block:
+        - name: Update Homebrew
+          homebrew:
+            update_homebrew: true
+
+        - name: Install CoreUtils
+          homebrew:
+            name: coreutils
+            state: present

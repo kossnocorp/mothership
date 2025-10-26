@@ -16,6 +16,11 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     printf "\n🚧 Installing Homebrew...\n\n"
     NONINTERACTIVE=1 bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     echo "🟢 Homebrew successfully installed!"
+
+    # TODO: Make sure to add and eval shell integration during installation
+    # echo >> /Users/koss/.zprofile
+    # echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> /Users/koss/.zprofile
+    # eval "$(/opt/homebrew/bin/brew shellenv)"
   else
     printf "\n⚪️ Homebrew found.\n"
   fi

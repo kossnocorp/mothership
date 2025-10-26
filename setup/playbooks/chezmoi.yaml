@@ -14,6 +14,6 @@
 
     - name: Initialize dotfiles
       when: ansible_env.GITHUB_USERNAME is defined
-      shell: "chezmoi init --apply {{ ansible_env.GITHUB_USERNAME }} --force"
+      shell: "{{ ansible_env.HOME }}/.local/bin/chezmoi init --apply {{ ansible_env.GITHUB_USERNAME }} --force"
       args:
         creates: "{{ ansible_env.HOME }}/.local/share/chezmoi"

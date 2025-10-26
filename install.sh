@@ -163,6 +163,10 @@ export ANSIBLE_BECOME_PASS="$sudo_password"
 playbooks="setup/playbooks"
 inventory="setup/playbooks/inventory.ini"
 
+# Install CoreUtils
+echo "🚧 Setting up CoreUtils..."
+ansible-playbook $playbooks/coreutils.yaml --inventory=$inventory
+
 # Install fish
 echo "🚧 Setting up fish..."
 ansible-playbook $playbooks/fish.yaml --inventory=$inventory
@@ -228,7 +232,7 @@ case "$(basename "$SHELL")" in
 esac
 
 if [ -n "$restart_cmd" ]; then
-   printf "or run:\n\n    $restart_cmd\n"
+   printf " or run:\n\n    $restart_cmd\n"
 else
   printf "\n"
 fi

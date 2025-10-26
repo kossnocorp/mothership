@@ -33,6 +33,8 @@
     - name: Install usage
       shell: |
         export PATH="$HOME/.local/bin:$PATH"
+        # cd to home to avoid running `mise trust`
+        cd "{{ ansible_env.HOME }}"
         mise ls usage || mise use -g usage
       changed_when: false
 
