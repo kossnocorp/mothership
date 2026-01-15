@@ -7,7 +7,9 @@ set -e
 
 echo -e "⚡️ Setting up development environment...\n"
 
-#region Prepare
+#region Prepare ================================================================
+
+#region Variables --------------------------------------------------------------
 
 #region .env
 
@@ -139,11 +141,11 @@ export SUDO_PASSWORD=""
 
 #endregion
 
-#region Install
+#region Install ================================================================
 
 echo "⚡️ Installing dependencies..."
 
-#region Base
+#region Base -------------------------------------------------------------------
 
 # Install Homebrew (macOS only)
 ./setup/scripts/homebrew.sh
@@ -155,70 +157,44 @@ printf "\n"
 
 #endregion
 
-#region Playbooks
+#region Playbooks --------------------------------------------------------------
 
+# Use received sudo password for Ansible operations that require elevated privileges
 export ANSIBLE_BECOME_PASS="$sudo_password"
 
 # Consts
-playbooks="setup/playbooks"
-inventory="setup/playbooks/inventory.ini"
+playbooks_dir="setup/playbooks"
+inventory_file="$playbooks_dir/inventory.ini"
+playbooks=(
+  "coreutils"
+  "fish"
+  "starship"
+  "mise"
+  "neovim"
+  "shfmt"
+  "age"
+  "sops"
+  "1password-cli"
+  "age-op"
+  "op-agent"
+  "unzip"
+)
 
-# Install CoreUtils
-echo "🚧 Setting up CoreUtils..."
-ansible-playbook $playbooks/coreutils.yaml --inventory=$inventory
+for playbook in "${playbooks[@]}"; do
+  echo "🚧 Setting up ${playbook}..."
+  ansible-playbook "$playbooks_dir/${playbook}.yaml" --inventory="$inventory_file" --extra-vars "GITHUB_USERNAME=$GITHUB_USERNAME"
+done
 
-# Install fish
-echo "🚧 Setting up fish..."
-ansible-playbook $playbooks/fish.yaml --inventory=$inventory
-
-# Install Starship
-echo "🚧 Setting up Starship..."
-ansible-playbook $playbooks/starship.yaml --inventory=$inventory
-
-# Install chezmoi
-echo "🚧 Setting up chezmoi..."
-ansible-playbook $playbooks/chezmoi.yaml --inventory=$inventory --extra-vars "GITHUB_USERNAME=$GITHUB_USERNAME"
-
-# Install mise
-echo "🚧 Setting up mise..."
-ansible-playbook $playbooks/mise.yaml --inventory=$inventory
-
-# Install Neovim
-echo "🚧 Setting up NeoVim..."
-ansible-playbook $playbooks/neovim.yaml --inventory=$inventory
-
-# Install shfmt
-echo "🚧 Setting up shfmt..."
-ansible-playbook $playbooks/shfmt.yaml --inventory=$inventory
-
-# Install age
-echo "🚧 Setting up age..."
-ansible-playbook $playbooks/age.yaml --inventory=$inventory
-
-# Install SOPS
-echo "🚧 Setting up SOPS..."
-ansible-playbook $playbooks/sops.yaml --inventory=$inventory
-
-# Install 1Password CLI
-echo "🚧 Setting up 1Password CLI..."
-ansible-playbook $playbooks/1password-cli.yaml --inventory=$inventory
-
-# Install age-op
-echo "🚧 Setting up age-op..."
-ansible-playbook $playbooks/age-op.yaml --inventory=$inventory
-
-# Install op-agent
-echo "🚧 Setting up op-agent..."
-ansible-playbook $playbooks/op-agent.yaml --inventory=$inventory
-
-# Clear ANSIBLE_BECOME_PASS to prevent leaks
+# Clear ANSIBLE_BECOME_PASS to prevent password leaks
 ANSIBLE_BECOME_PASS=""
 
 #endregion
 
+echo "⭐️ Installation complete!"
+
 #endregion
 
-echo "⭐️ Installation complete!"
+#region Finalize ===============================================================
 
 # Detect shell and suggest command to restart
 
@@ -236,3 +212,5 @@ if [ -n "$restart_cmd" ]; then
 else
   printf "\n"
 fi
+
+#endregion
