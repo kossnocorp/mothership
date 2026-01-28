@@ -1,0 +1,50 @@
+---
+- name: >-
+    Install {{
+      pkg_name
+        | default(brew_name
+        | default(apt_name
+        | default('???')))
+    }}
+  hosts: localhost
+  connection: local
+  gather_facts: true
+
+  vars:
+    apt_pkg: "{{ apt_name | default(pkg_name) }}"
+    brew_pkg: "{{ brew_name | default(pkg_name) }}"
+
+  tasks:
+    - name: Debian family set up
+      when: ansible_os_family == "Debian"
+      become: yes
+      block:
+        - name: Validate package name
+          assert:
+            that:
+              - apt_pkg is defined
+            fail_msg: >
+              No package name resolved. Pass pkg_name or apt_name.
+
+        - name: Install {{ apt_pkg }}
+          apt:
+            name: "{{ apt_pkg }}"
+            state: present
+            update_cache: yes
+            cache_valid_time: 3600
+
+    - name: macOS set up
+      when: ansible_system == "Darwin"
+      block:
+        - name: Validate package name
+          assert:
+            that:
+              - brew_name is defined
+            fail_msg: >
+              No package name resolved. Pass pkg_name or brew_name.
+
+        - name: Install {{ resolved_pkg }}
+          homebrew:
+            name: "{{ brew_pkg }}"
+            state: present
+            update_homebrew: true

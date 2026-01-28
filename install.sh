@@ -182,8 +182,20 @@ playbooks=(
 
 for playbook in "${playbooks[@]}"; do
   echo "🚧 Setting up ${playbook}..."
+  # TODO: Check if GITHUB_USERNAME is actually needed, as we access it via
+  # `ansible_env.GITHUB_USERNAME` rather than a var.
   ansible-playbook "$playbooks_dir/${playbook}.yaml" --inventory="$inventory_file" --extra-vars "GITHUB_USERNAME=$GITHUB_USERNAME"
 done
+
+pkgs=(
+  "git-lfs"
+)
+
+for pkg in "${pkgs[@]}"; do
+  echo "🚧 Setting up ${pkg}..."
+  ansible-playbook "$playbooks_dir/pkg.yaml" --inventory="$inventory_file" -e "pkg_name=$pkg"
+done
+
 
 # Clear ANSIBLE_BECOME_PASS to prevent password leaks
 ANSIBLE_BECOME_PASS=""
